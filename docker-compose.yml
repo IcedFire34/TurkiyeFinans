@@ -1,0 +1,30 @@
+services:
+  turkiyefinans:
+    container_name: turkiyefinansapp
+    image: turkiyefinans
+    build:
+      context: .
+      dockerfile: ././TurkiyeFinans/Dockerfile
+    ports:
+      - "8080:80"
+      - "8081:80"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST},${DB_PORT};Database=TurkiyeFinansDb;User=sa;Password=${SA_PASSWORD};
+    depends_on:
+      - mssql
+
+  mssql:
+    container_name: mssql
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: ${SA_PASSWORD}
+      ACCEPT_EULA: "Y"
+      MSSQL_ENCRYPT: Optional
+    ports:
+      - "${DB_PORT}:1433"
+    volumes:
+      - mssqldata:/var/opt/mssql
+
+volumes:
+  mssqldata:
+

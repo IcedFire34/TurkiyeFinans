@@ -1,0 +1,17 @@
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\TurkiyeFinans.deps.json
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\TurkiyeFinans.runtimeconfig.json
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\appsettings.Development.json
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\appsettings.json
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\TurkiyeFinans.staticwebassets.runtime.json
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\TurkiyeFinans.exe
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\TurkiyeFinans.dll
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\obj\Debug\docker-compose.dcproj.AssemblyReference.cache
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\obj\Debug\docker-compose.dcproj.CoreCompileInputs.cache
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\obj\Debug\docker-c.35A3FFBA.Up2Date
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\TurkiyeFinans.pdb
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\Microsoft.EntityFrameworkCore.dll
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\Microsoft.Data.SqlClient.dll
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\Microsoft.Identity.Client.dll
