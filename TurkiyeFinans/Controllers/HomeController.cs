@@ -15,7 +15,24 @@ namespace TurkiyeFinans.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            ViewModel viewModel = new ViewModel();
+            return View(viewModel);
+        }
+        [HttpPost]
+        public IActionResult Index(ViewModel model)
+        {
+            ServiceKPSPublic service = new ServiceKPSPublic();
+            Response response = new Response();
+
+            response._mernisserviceparametters.TCKimlikNo = model._mernisserviceparametters.TCKimlikNo;
+            response._mernisserviceparametters.Ad=model._mernisserviceparametters.Ad;
+            response._mernisserviceparametters.Soyad = model._mernisserviceparametters.Soyad;
+            response._mernisserviceparametters.DogumYili = model._mernisserviceparametters.DogumYili;
+
+            var resault = service.OnGetService(response._mernisserviceparametters);
+
+
+            return View(model);
         }
 
         public IActionResult Privacy()
