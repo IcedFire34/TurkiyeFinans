@@ -5,7 +5,7 @@ namespace TurkiyeFinans.Models;
 
 public partial class Account
 {
-    public int AccountId { get; set; }
+    public string AccountId { get; set; } = null!;
 
     public int CustomerId { get; set; }
 

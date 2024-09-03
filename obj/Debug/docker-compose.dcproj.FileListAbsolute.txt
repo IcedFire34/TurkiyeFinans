@@ -44,3 +44,4 @@ C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\ru\System.ServiceM
 C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\tr\System.ServiceModel.Http.resources.dll
 C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\zh-Hans\System.ServiceModel.Http.resources.dll
 C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\zh-Hant\System.ServiceModel.Http.resources.dll
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\bin\Debug\libman.json

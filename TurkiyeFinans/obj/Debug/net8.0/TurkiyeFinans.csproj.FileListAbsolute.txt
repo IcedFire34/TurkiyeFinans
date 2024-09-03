@@ -211,3 +211,4 @@ C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\TurkiyeFinans\bin\Debug\net8
 C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\TurkiyeFinans\bin\Debug\net8.0\tr\System.ServiceModel.Primitives.resources.dll
 C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\TurkiyeFinans\bin\Debug\net8.0\zh-Hans\System.ServiceModel.Primitives.resources.dll
 C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\TurkiyeFinans\bin\Debug\net8.0\zh-Hant\System.ServiceModel.Primitives.resources.dll
+C:\Dosyalarim\Dosyalar\Projelerim\Web\TurkiyeFinans\TurkiyeFinans\bin\Debug\net8.0\libman.json

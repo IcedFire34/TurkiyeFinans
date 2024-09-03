@@ -7,7 +7,7 @@ public partial class Card
 {
     public int CardId { get; set; }
 
-    public int AccountId { get; set; }
+    public string AccountId { get; set; } = null!;
 
     public string CardType { get; set; } = null!;
 

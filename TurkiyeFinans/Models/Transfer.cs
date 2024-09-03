@@ -7,9 +7,9 @@ public partial class Transfer
 {
     public int TransferId { get; set; }
 
-    public int FromAccountId { get; set; }
+    public string FromAccountId { get; set; } = null!;
 
-    public int ToAccountId { get; set; }
+    public string ToAccountId { get; set; } = null!;
 
     public double Amount { get; set; }
 

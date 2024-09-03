@@ -9,6 +9,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<TurkiyeFinansDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// `appsettings.json`'dan Connection String alýnýyor
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// CustomerOperations için DI ayarý
+builder.Services.AddSingleton(new CustomerOperations(connectionString));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
