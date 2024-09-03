@@ -35,8 +35,8 @@ namespace TurkiyeFinans.Models
                     }
 
                     // 2. Müşteriyi ekle
-                    string insertQuery = "INSERT INTO [dbo].[Customer] (FirstName, LastName, DateOfBirth, Address, PhoneNumber, Email, IdentificationNumber) " +
-                        "VALUES (@FirstName, @LastName, @DateOfBirth, @Address, @PhoneNumber, @Email, @IdentificationNumber)";
+                    string insertQuery = "INSERT INTO [dbo].[Customer] (FirstName, LastName, DateOfBirth, Address, PhoneNumber, Email, IdentificationNumber, Pass) " +
+                        "VALUES (@FirstName, @LastName, @DateOfBirth, @Address, @PhoneNumber, @Email, @IdentificationNumber, @Pass)";
                     SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
 
                     // Parametreleri ekliyoruz (SQL Injection'dan korunmak için)
@@ -47,6 +47,7 @@ namespace TurkiyeFinans.Models
                     insertCommand.Parameters.AddWithValue("@PhoneNumber", customer.Telefon);
                     insertCommand.Parameters.AddWithValue("@Email", customer.Email);
                     insertCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo);
+                    insertCommand.Parameters.AddWithValue("@Pass", customer.Pass);
 
                     // ExecuteNonQuery, etkilenen satır sayısını döndürür
                     int result = await insertCommand.ExecuteNonQueryAsync();

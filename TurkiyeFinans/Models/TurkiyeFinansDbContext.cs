@@ -143,8 +143,7 @@ public partial class TurkiyeFinansDbContext : DbContext
             entity.ToTable("Customer");
 
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-            entity.Property(e => e.Address).HasMaxLength(50);
-            entity.Property(e => e.DateOfBirth).HasMaxLength(8);
+            entity.Property(e => e.DateOfBirth).HasMaxLength(10);
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.FirstName).HasMaxLength(50);
             entity.Property(e => e.LastName).HasMaxLength(50);
