@@ -20,3 +20,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+.header-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Aralarýndaki boþluðu ayarlar */
+}
+
+.btn {
+    margin-left: 10px; /* Buton ile label arasýnda boþluk */
+}

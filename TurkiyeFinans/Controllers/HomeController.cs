@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using TurkiyeFinans.Models;
 
@@ -8,11 +9,13 @@ namespace TurkiyeFinans.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly CustomerOperations _customerOperations;
+        private readonly TurkiyeFinansDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger, CustomerOperations customerOperations)
+        public HomeController(ILogger<HomeController> logger, CustomerOperations customerOperations, TurkiyeFinansDbContext context)
         {
             _logger = logger;
             _customerOperations = customerOperations;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -106,6 +109,16 @@ namespace TurkiyeFinans.Controllers
                 return View("Index");
             }
             
+        }
+
+        public IActionResult CustomerListele()
+        {
+            var viewModel = new ViewModel
+            {
+                _Customer = _context.Customers.ToList(),
+                
+            };
+            return View("Index", viewModel);
         }
 
         public IActionResult Privacy()

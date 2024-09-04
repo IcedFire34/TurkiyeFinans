@@ -43,9 +43,7 @@
     <br />
     <button type="submit" class="btn btn-primary">Kayit ol</button>
 </form>
-
-
-<br></br>
+<br />
 <form method="post" asp-controller="Home" asp-action="GirisYap">
     <div class="form-group">
         <label><strong>Giris Yap</strong></label>
@@ -58,10 +56,10 @@
         <label for="GirPass">Password</label>
         <input type="password" class="form-control" id="GirPass" name="GirPass" />
     </div>
-    <br></br>
+    <br />
     <button type="submit" class="btn btn-primary">Giris Yap</button>
 </form>
-<br></br>
+<br />
 <form method="post" asp-controller="Home" asp-action="Sil">
     <div class="form-group">
         <label><strong>Musteri Sil</strong></label>
@@ -70,6 +68,47 @@
         <label for="SilTCKimlikNo">TC no</label>
         <input type="number" class="form-control" id="SilTCKimlikNo" name="SilTCKimlikNo" />
     </div>
-    <br></br>
+    <br />
     <button type="submit" class="btn btn-primary">Sil</button>
 </form>
+<br />
+
+<div class="header-container">
+    <label><strong>Müşteri Listesi</strong></label>
+    <form method="post" asp-action="CustomerListele">
+        <button type="submit" class="btn btn-primary">Listele</button>
+    </form>
+</div>
+
+@if (Model._Customer != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>CustomerId</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>DateOfBirth</th>
+                <th>Address</th>
+                <th>PhoneNumber</th>
+                <th>Email</th>
+                <th>IdentificationNumber</th>                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model._Customer)
+            {
+                <tr>
+                    <td>@customer.CustomerId</td>
+                    <td>@customer.FirstName</td>
+                    <td>@customer.LastName</td>
+                    <td>@customer.DateOfBirth</td>
+                    <td>@customer.Address</td>
+                    <td>@customer.PhoneNumber</td>
+                    <td>@customer.Email</td>
+                    <td>@customer.IdentificationNumber</td>                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
