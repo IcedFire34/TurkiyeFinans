@@ -23,7 +23,7 @@ namespace TurkiyeFinans.Models
                     // 1. Müşteriyi IdentificationNumber ile kontrol et
                     string checkQuery = "SELECT COUNT(*) FROM [dbo].[Customer] WHERE IdentificationNumber = @IdentificationNumber";
                     SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
-                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo);
+                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
 
                     int customerCount = (int)await checkCommand.ExecuteScalarAsync();
 
@@ -46,7 +46,7 @@ namespace TurkiyeFinans.Models
                     insertCommand.Parameters.AddWithValue("@Address", customer.Adres);
                     insertCommand.Parameters.AddWithValue("@PhoneNumber", customer.Telefon);
                     insertCommand.Parameters.AddWithValue("@Email", customer.Email);
-                    insertCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo);
+                    insertCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
                     insertCommand.Parameters.AddWithValue("@Pass", customer.Pass);
 
                     // ExecuteNonQuery, etkilenen satır sayısını döndürür
@@ -80,7 +80,7 @@ namespace TurkiyeFinans.Models
                     // 1. Müşteriyi IdentificationNumber ile kontrol et
                     string checkQuery = "SELECT COUNT(*) FROM [dbo].[Customer] WHERE IdentificationNumber = @IdentificationNumber";
                     SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
-                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo);
+                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
                     int customerCount = (int)await checkCommand.ExecuteScalarAsync();
 
                     // Eğer müşteri mevcutsa, silme islemi yap.
@@ -92,7 +92,7 @@ namespace TurkiyeFinans.Models
                         SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection);
 
                         // Parametreleri ekliyoruz (SQL Injection'dan korunmak için)
-                        deleteCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo);
+                        deleteCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
 
                         // ExecuteNonQuery, etkilenen satır sayısını döndürür
                         int result = await deleteCommand.ExecuteNonQueryAsync();
@@ -105,6 +105,46 @@ namespace TurkiyeFinans.Models
                         Console.WriteLine("<<<<< Müşteri mevcut degil. >>>>>");
                         return false;
                     }                    
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return false;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+        public async Task<bool> VerifyCustomerAsync(MernisServiceParametters customer)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    // 1. Müşteriyi IdentificationNumber ile kontrol et
+                    string checkQuery = "SELECT COUNT(*) FROM [dbo].[Customer] WHERE IdentificationNumber = @IdentificationNumber AND Pass = @Pass";
+                    SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
+
+                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
+                    checkCommand.Parameters.AddWithValue("@Pass", customer.Pass);
+
+                    int customerCount = (int)await checkCommand.ExecuteScalarAsync();
+
+                    // Eğer müşteri mevcutsa, Giris yap.
+                    if (customerCount > 0)
+                    {
+                        Console.WriteLine("<<<<< Bilgiler Dogru. >>>>>");                                                
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("<<<<< Bilgiler Yanlis. >>>>>");
+                        return false;
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -4,72 +4,72 @@
     ViewData["Title"] = "Home Page";
 }
 
-<form method="post" asp-controller="Home" asp-action="Index">
+<form method="post" asp-controller="Home" asp-action="KayitOl">
     <div class="form-group">
         <label><strong>Kayıt Ol</strong></label>
     </div>
     <div class="form-group">
-        <label for="tc">TC no</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.TCKimlikNo, new { @class = "form-control", @type = "number", id = "TCKimlikNo", nameo = "TCKimlikNo" })
+        <label for="TCKimlikNo">TC no</label>
+        <input type="number" class="form-control" id="TCKimlikNo" name="TCKimlikNo" />
     </div>
     <div class="form-group">
-        <label for="ad">Adı</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.Ad, new { @class = "form-control", @type = "text", id = "Ad" })
+        <label for="Ad">Adı</label>
+        <input type="text" class="form-control" id="Ad" name="Ad" />
     </div>
     <div class="form-group">
-        <label for="soyad">Soyadı</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.Soyad, new { @class = "form-control", @type = "text", id = "Soyadı" })
-    </div>    
+        <label for="Soyad">Soyadı</label>
+        <input type="text" class="form-control" id="Soyad" name="Soyad" />
+    </div>
     <div class="form-group">
         <label for="DogumTarihi">Doğum Tarihi</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.DogumTarihi, new { @class = "form-control", @type = "date", id = "DogumTarihi" })
+        <input type="date" class="form-control" id="DogumTarihi" name="DogumTarihi" />
     </div>
     <div class="form-group">
         <label for="Adres">Adres</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.Adres, new { @class = "form-control", @type = "text", id = "Adres" })
+        <input type="text" class="form-control" id="Adres" name="Adres" />
     </div>
     <div class="form-group">
         <label for="Telefon">Telefon</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.Telefon, new { @class = "form-control", @type = "tel", id = "Telefon" })
+        <input type="tel" class="form-control" id="Telefon" name="Telefon" />
     </div>
     <div class="form-group">
         <label for="Email">Email</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.Email, new { @class = "form-control", @type = "email", id = "Email" })
+        <input type="email" class="form-control" id="Email" name="Email" />
     </div>
     <div class="form-group">
         <label for="Pass">Parola</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.Pass, new { @class = "form-control", @type = "text", id = "Pass" })
+        <input type="password" class="form-control" id="Pass" name="Pass" />
     </div>
-
-    <button type="submit" class="btn btn-primary" asp-controller="Home" asp-action="KayitOl">Kayit ol</button>
-
+    <br />
+    <button type="submit" class="btn btn-primary">Kayit ol</button>
 </form>
+
+
 <br></br>
-<form method="post" asp-controller="Home" asp-action="Index">
+<form method="post" asp-controller="Home" asp-action="GirisYap">
     <div class="form-group">
         <label><strong>Giris Yap</strong></label>
     </div>
     <div class="form-group">
-        <label for="exampleInputEmail2">TC no</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.TCKimlikNo, new { @class = "form-control", @type = "number", id = "GirTCKimlikNo", name = "GirTCKimlikNo" })
+        <label for="GirTCKimlikNo">TC no</label>
+        <input type="number" class="form-control" id="GirTCKimlikNo" name="GirTCKimlikNo" />
     </div>
     <div class="form-group">
-        <label for="exampleInputEmail2">Password</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.Pass, new { @class = "form-control", @type = "number", id = "pass", name = "pass" })
+        <label for="GirPass">Password</label>
+        <input type="password" class="form-control" id="GirPass" name="GirPass" />
     </div>
-
-    <button type="submit" class="btn btn-primary" asp-controller="Home" asp-action="Sil">Sil</button>
-
+    <br></br>
+    <button type="submit" class="btn btn-primary">Giris Yap</button>
 </form>
 <br></br>
-<form method="post" asp-controller="Home" asp-action="Index">
+<form method="post" asp-controller="Home" asp-action="Sil">
     <div class="form-group">
         <label><strong>Musteri Sil</strong></label>
     </div>
     <div class="form-group">
-        <label for="exampleInputEmail2">TC no</label>
-        @Html.TextBoxFor(model => model._mernisserviceparametters.TCKimlikNo, new { @class = "form-control", @type = "number", id = "SilTCKimlikNo" , name = "SilTCKimlikNo"})
+        <label for="SilTCKimlikNo">TC no</label>
+        <input type="number" class="form-control" id="SilTCKimlikNo" name="SilTCKimlikNo" />
     </div>
-
-    <button type="submit" class="btn btn-primary" asp-controller="Home" asp-action="Sil">Sil</button>
+    <br></br>
+    <button type="submit" class="btn btn-primary">Sil</button>
 </form>

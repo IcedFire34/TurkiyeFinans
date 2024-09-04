@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TurkiyeFinans")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1343f58c16bea3e8f3c68213b2cd3d3b3edda409")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c7e9d7daeae873c6dc48cd1264bd46b9bee3c28")]
 [assembly: System.Reflection.AssemblyProductAttribute("TurkiyeFinans")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TurkiyeFinans")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
