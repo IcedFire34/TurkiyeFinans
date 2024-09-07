@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -9,13 +10,17 @@ namespace TurkiyeFinans.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly CustomerOperations _customerOperations;
+        private readonly AccountOperations _accountOperations;
         private readonly TurkiyeFinansDbContext _context;
+        private readonly CurrencyOperations _currencyOperations;
 
-        public HomeController(ILogger<HomeController> logger, CustomerOperations customerOperations, TurkiyeFinansDbContext context)
+        public HomeController(ILogger<HomeController> logger, CustomerOperations customerOperations, TurkiyeFinansDbContext context, AccountOperations accountOperations, CurrencyOperations currencyOperations)
         {
             _logger = logger;
             _customerOperations = customerOperations;
             _context = context;
+            _accountOperations = accountOperations;
+            _currencyOperations = currencyOperations;
         }
 
         public IActionResult Index()
@@ -23,6 +28,8 @@ namespace TurkiyeFinans.Controllers
             ViewModel viewModel = new ViewModel();
             return View(viewModel);
         }
+        // Kayýt Ol
+        // Kayit formu tarafindan cagriliyor.
         [HttpPost]
         public async Task<IActionResult> KayitOl(long TCKimlikNo, string Ad, string Soyad, string DogumTarihi, string Adres, string Telefon, string Email, string Pass)
         {
@@ -71,6 +78,7 @@ namespace TurkiyeFinans.Controllers
                 return View("Index");
             }           
         }
+        // Customer siliyor
         [HttpPost]
         public async Task<IActionResult> Sil(long SilTCKimlikNo)
         {
@@ -89,6 +97,8 @@ namespace TurkiyeFinans.Controllers
             }
             return View("Index");
         }
+        
+        // Giris yapiyor
         [HttpPost]
         public async Task<IActionResult> GirisYap(long GirTCKimlikNo, string GirPass)
         {
@@ -96,12 +106,17 @@ namespace TurkiyeFinans.Controllers
             {
                 TCKimlikNo = GirTCKimlikNo,
                 Pass = GirPass
-            };            
+            };
+            var viewData = new ViewModel
+            {
+                _Customer = _context.Customers.Where(c => c.IdentificationNumber == GirTCKimlikNo.ToString()).ToList(),
+            };
             bool isVerify = await _customerOperations.VerifyCustomerAsync(param);
             if (isVerify)
             {
                 _logger.LogInformation("<<<<< Bilgiler dogru. Giris yapiliyor. >>>>>");
-                return View("AnaEkran");
+                TempData["UserTC"]=GirTCKimlikNo.ToString();
+                return View("AnaEkran",viewData);
             }
             else
             {
@@ -120,6 +135,31 @@ namespace TurkiyeFinans.Controllers
             };
             return View("Index", viewModel);
         }
+
+        public IActionResult AnaEkran()
+        {
+            ViewModel viewModel = new ViewModel();
+            return View(viewModel);
+        }
+
+        public IActionResult HesapOlustur()
+        {
+            ViewModel viewModel = new ViewModel();
+            viewModel._Currency = _currencyOperations.GetAllCurrencyAsync().Result;  // Döviz listesini alýyoruz           
+            ViewBag.Currencies = viewModel._Currency;  // Dövizleri ViewBag ile sayfaya taþýyoruz
+            return View(viewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> HesapAc(string AccountType,int Deposit,string Currency)
+        {
+            string userTC = TempData["UserTC"].ToString();
+            Customer user = await _customerOperations.GetCustomerAsync(userTC);            
+            bool result = await _accountOperations.AddAccountAsync(user.CustomerId,AccountType,Currency,Deposit);    
+            TempData["UserTC"]=userTC;
+            return RedirectToAction("HesapOlustur");
+        }
+        
+        
 
         public IActionResult Privacy()
         {

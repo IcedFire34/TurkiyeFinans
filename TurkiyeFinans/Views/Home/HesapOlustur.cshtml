@@ -1,0 +1,97 @@
+﻿@model TurkiyeFinans.Models.ViewModel
+@{
+    Layout = "_TestLayout";
+    var currencies = ViewBag.Currencies as List<Currency>;  // Döviz listesini alıyoruz
+}
+
+<form asp-action="HesapAc" method="post" onsubmit="return validateForm()">
+    <div class="form-group">
+        <label><strong>Hesap Oluştur</strong></label>
+    </div>
+
+    <div class="form-group">
+        <label for="AccountType">Hesap Türü</label>
+        <select class="form-control" id="AccountType" name="AccountType" required onchange="showDynamicFields()">
+            <option value="" disabled selected hidden>Seçiniz...</option>
+            <option value="Vadeli">Vadeli</option>
+            <option value="Vadesiz">Vadesiz</option>
+            <option value="Yatırım">Yatırım</option>
+            <option value="Altın">Altın</option>
+            <option value="Döviz">Döviz</option>
+        </select>
+    </div>
+
+    <!-- Vadeli hesap için gösterilecek textbox -->
+    <div class="form-group" id="maturityTextbox" style="display:none;">
+        <label for="Deposit">Vade Zamanı (gün)</label>
+        <input type="number" class="form-control" id="Deposit" name="Deposit" placeholder="Gün sayısı" />
+    </div>
+
+    <!-- Döviz için gösterilecek combobox -->
+    <div class="form-group" id="currencyDropdown" style="display:none;">
+        <label for="Currency">Döviz Türü</label>
+        <select class="form-control" id="Currency" name="Currency">
+            <option value="" disabled selected hidden>Seçiniz...</option>
+            @if (currencies != null)
+            {
+                foreach (var currency in currencies)
+                {
+                    if (currency.CurrencyId == "TL" || currency.CurrencyId == "AU") continue;
+
+                    <option value="@currency.CurrencyId">@currency.CurrencyId</option>
+                }
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Oluştur</button>
+</form>
+
+<script>
+    function showDynamicFields() {
+        var accountType = document.getElementById("AccountType").value;
+        var maturityTextbox = document.getElementById("maturityTextbox");
+        var currencyDropdown = document.getElementById("currencyDropdown");
+
+        // Vadeli hesap için vade zamanını göster
+        if (accountType === "Vadeli") {
+            maturityTextbox.style.display = "block";
+            currencyDropdown.style.display = "none";  // Döviz seçeneği varsa gizle
+        }
+        // Döviz hesap için döviz türü combobox'ını göster
+        else if (accountType === "Döviz") {
+            currencyDropdown.style.display = "block";
+            maturityTextbox.style.display = "none";  // Vade zamanını gizle
+        }
+        // Diğer hesap türleri için her ikisini de gizle
+        else {
+            maturityTextbox.style.display = "none";
+            currencyDropdown.style.display = "none";
+        }
+    }
+
+    function validateForm() {
+        var accountType = document.getElementById("AccountType").value;
+        var deposit = document.getElementById("Deposit").value;
+        var currency = document.getElementById("Currency").value;
+
+        // Hesap türü seçilmezse uyarı verilir
+        if (accountType === "") {
+            alert("Lütfen bir hesap türü seçiniz.");
+            return false;
+        }
+
+        // Hesap türü "Vadeli" ise ve Vade Zamanı girilmemişse uyarı verilir
+        if (accountType === "Vadeli" && deposit === "") {
+            alert("Lütfen vade zamanını giriniz.");
+            return false;
+        }
+
+        // Hesap türü "Döviz" ise ve döviz seçilmemişse uyarı verilir
+        if (accountType === "Döviz" && currency === "") {
+            alert("Lütfen bir döviz türü seçiniz.");
+            return false;
+        }
+        return true;
+    }
+</script>

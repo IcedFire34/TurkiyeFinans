@@ -7,7 +7,7 @@ public partial class CurrencyExchange
 {
     public int ExchangeId { get; set; }
 
-    public string AccountId { get; set; } = null!;
+    public int AccountId { get; set; }
 
     public string FromCurrency { get; set; } = null!;
 

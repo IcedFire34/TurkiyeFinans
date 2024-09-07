@@ -13,6 +13,10 @@ builder.Services.AddDbContext<TurkiyeFinansDbContext>(options =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // CustomerOperations için DI ayarý
 builder.Services.AddSingleton(new CustomerOperations(connectionString));
+// AccountOperations için DI ayarý
+builder.Services.AddSingleton(new AccountOperations(connectionString));
+// CurrencyOperations için DI ayarý
+builder.Services.AddSingleton(new CurrencyOperations(connectionString));
 
 var app = builder.Build();
 

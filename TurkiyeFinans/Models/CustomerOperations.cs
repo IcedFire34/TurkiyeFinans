@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TurkiyeFinans.Models
 {
@@ -117,6 +118,10 @@ namespace TurkiyeFinans.Models
                 }
             }
         }
+        
+        // Musteri bilgilerini dogrular
+        // Parametre olarak aldığı MernisServiceParametresi
+        
         public async Task<bool> VerifyCustomerAsync(MernisServiceParametters customer)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -150,6 +155,55 @@ namespace TurkiyeFinans.Models
                 {
                     Console.WriteLine("Hata: " + ex.Message);
                     return false;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+
+        public async Task<Customer> GetCustomerAsync(string UserTC)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {                    
+                    await connection.OpenAsync();
+                    // 1. Müşteriyi IdentificationNumber ile kontrol et
+                    string checkQuery = "SELECT * FROM [dbo].[Customer] WHERE IdentificationNumber = @IdentificationNumber";
+                    SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
+
+                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", UserTC);
+
+                    using (SqlDataReader reader = await checkCommand.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            // Müşteri bilgilerini al
+                            Customer customer = new Customer
+                            {
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerID")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                                DateOfBirth = reader.GetString(reader.GetOrdinal("DateOfBirth")),
+                                Address = reader.GetString(reader.GetOrdinal("Address")),
+                                PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                IdentificationNumber = reader.GetString(reader.GetOrdinal("IdentificationNumber")),
+                                Pass = reader.GetString(reader.GetOrdinal("Pass"))
+                            };
+
+                            // Listeye ekle
+                            return customer;
+                        }
+                        return null;
+                    }                    
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return null;
                 }
                 finally
                 {

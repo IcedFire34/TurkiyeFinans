@@ -7,7 +7,7 @@ public partial class Investment
 {
     public int InvestmentId { get; set; }
 
-    public string AccountId { get; set; } = null!;
+    public int AccountId { get; set; }
 
     public string InvestmentType { get; set; } = null!;
 

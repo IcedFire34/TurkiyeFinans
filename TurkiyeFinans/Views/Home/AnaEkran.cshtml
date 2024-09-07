@@ -1,8 +1,15 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model TurkiyeFinans.Models.ViewModel
 @{
     Layout = "_TestLayout";
 }
-<h3>Hosgeldiniz</h3>
+<h3>Hosgeldiniz @Model._Customer[0].FirstName</h3>
 
+<div class="header-container">
+    <form method="post" asp-action="HesapOlustur">
+        <input type="hidden" name="identificationNumber" value="@Model._Customer[0].IdentificationNumber" />
+        <button type="submit" class="btn btn-primary">Hesap Ac</button>
+    </form>
+</div>
