@@ -2,3 +2,6 @@ TurkiyeFinans/appsettings.json
 TurkiyeFinans/appsettings.Development.json
 .vs
 .env
+bin/
+obj/
+out/
