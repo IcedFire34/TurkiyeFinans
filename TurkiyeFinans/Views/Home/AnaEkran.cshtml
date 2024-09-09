@@ -5,11 +5,11 @@
 @{
     Layout = "_TestLayout";
 }
-<h3>Hosgeldiniz @Model._Customer[0].FirstName</h3>
+<h3>Hosgeldiniz @Model._Customer.FirstName</h3>
 
 <div class="header-container">
     <form method="post" asp-action="HesapOlustur">
-        <input type="hidden" name="identificationNumber" value="@Model._Customer[0].IdentificationNumber" />
+        <input type="hidden" name="identificationNumber" value="@Model._Customer.IdentificationNumber" />
         <button type="submit" class="btn btn-primary">Hesap Ac</button>
     </form>   
 </div>

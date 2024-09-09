@@ -12,8 +12,8 @@ namespace TurkiyeFinans.Models
         }
 
         // Müşteri ekler.
-        // Parametre olarak MernisServiceParametters tipinde bir müşteri bilgisi alır ve bunun kontrollerini yapıp veri tabanına ekler. 
-        public async Task<bool> AddCustomerAsync(MernisServiceParametters customer)
+        // Parametre olarak Customer tipinde bir müşteri bilgisi alır ve bunun kontrollerini yapıp veri tabanına ekler. 
+        public async Task<bool> AddCustomerAsync(Customer customer)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -24,7 +24,7 @@ namespace TurkiyeFinans.Models
                     // 1. Müşteriyi IdentificationNumber ile kontrol et
                     string checkQuery = "SELECT COUNT(*) FROM [dbo].[Customer] WHERE IdentificationNumber = @IdentificationNumber";
                     SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
-                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
+                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.IdentificationNumber);
 
                     int customerCount = (int)await checkCommand.ExecuteScalarAsync();
 
@@ -41,13 +41,13 @@ namespace TurkiyeFinans.Models
                     SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
 
                     // Parametreleri ekliyoruz (SQL Injection'dan korunmak için)
-                    insertCommand.Parameters.AddWithValue("@FirstName", customer.Ad);
-                    insertCommand.Parameters.AddWithValue("@LastName", customer.Soyad);
-                    insertCommand.Parameters.AddWithValue("@DateOfBirth", customer.DogumTarihi);
-                    insertCommand.Parameters.AddWithValue("@Address", customer.Adres);
-                    insertCommand.Parameters.AddWithValue("@PhoneNumber", customer.Telefon);
+                    insertCommand.Parameters.AddWithValue("@FirstName", customer.FirstName);
+                    insertCommand.Parameters.AddWithValue("@LastName", customer.LastName);
+                    insertCommand.Parameters.AddWithValue("@DateOfBirth", customer.DateOfBirth);
+                    insertCommand.Parameters.AddWithValue("@Address", customer.Address);
+                    insertCommand.Parameters.AddWithValue("@PhoneNumber", customer.PhoneNumber);
                     insertCommand.Parameters.AddWithValue("@Email", customer.Email);
-                    insertCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
+                    insertCommand.Parameters.AddWithValue("@IdentificationNumber", customer.IdentificationNumber);
                     insertCommand.Parameters.AddWithValue("@Pass", customer.Pass);
 
                     // ExecuteNonQuery, etkilenen satır sayısını döndürür
@@ -67,10 +67,9 @@ namespace TurkiyeFinans.Models
                 }
             }
         }
-
         // Müşteri siler
-        // Parametre olarak MernisServiceParametters tipinde bir müşteri bilgisi alır ve bunun kontrollerini yapıp siler.
-        public async Task<bool> DelCustomerAsync(MernisServiceParametters customer)
+        // Parametre olarak Customer tipinde bir müşteri bilgisi alır ve bunun kontrollerini yapıp siler.
+        public async Task<bool> DelCustomerAsync(Customer customer)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -81,7 +80,7 @@ namespace TurkiyeFinans.Models
                     // 1. Müşteriyi IdentificationNumber ile kontrol et
                     string checkQuery = "SELECT COUNT(*) FROM [dbo].[Customer] WHERE IdentificationNumber = @IdentificationNumber";
                     SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
-                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
+                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.IdentificationNumber);
                     int customerCount = (int)await checkCommand.ExecuteScalarAsync();
 
                     // Eğer müşteri mevcutsa, silme islemi yap.
@@ -93,7 +92,7 @@ namespace TurkiyeFinans.Models
                         SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection);
 
                         // Parametreleri ekliyoruz (SQL Injection'dan korunmak için)
-                        deleteCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
+                        deleteCommand.Parameters.AddWithValue("@IdentificationNumber", customer.IdentificationNumber);
 
                         // ExecuteNonQuery, etkilenen satır sayısını döndürür
                         int result = await deleteCommand.ExecuteNonQueryAsync();
@@ -118,11 +117,9 @@ namespace TurkiyeFinans.Models
                 }
             }
         }
-        
         // Musteri bilgilerini dogrular
-        // Parametre olarak aldığı MernisServiceParametresi
-        
-        public async Task<bool> VerifyCustomerAsync(MernisServiceParametters customer)
+        // Parametre olarak aldığı Customer tipindeki nesnenin IdentificationNumber ve Pass degerlerine gore dogrulama yapar
+        public async Task<bool> VerifyCustomerAsync(Customer customer)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -134,7 +131,7 @@ namespace TurkiyeFinans.Models
                     string checkQuery = "SELECT COUNT(*) FROM [dbo].[Customer] WHERE IdentificationNumber = @IdentificationNumber AND Pass = @Pass";
                     SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
 
-                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.TCKimlikNo.ToString());
+                    checkCommand.Parameters.AddWithValue("@IdentificationNumber", customer.IdentificationNumber);
                     checkCommand.Parameters.AddWithValue("@Pass", customer.Pass);
 
                     int customerCount = (int)await checkCommand.ExecuteScalarAsync();
@@ -162,8 +159,9 @@ namespace TurkiyeFinans.Models
                 }
             }
         }
-
-        public async Task<Customer> GetCustomerAsync(string UserTC)
+        // Musteri geri dondurur
+        // Girilen string tipindeki IdentificationNumber degeri ile veri tabaninda sorgulama yapar ve Customerı geri dondurur
+        public async Task<Customer?> GetCustomerAsync(string UserTC)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {

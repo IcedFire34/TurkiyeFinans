@@ -22,7 +22,14 @@ namespace TurkiyeFinans.Controllers
             _accountOperations = accountOperations;
             _currencyOperations = currencyOperations;
         }
-
+        public IActionResult Login()
+        {
+            return View();
+        }
+        public IActionResult Register()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             ViewModel viewModel = new ViewModel();
@@ -31,19 +38,8 @@ namespace TurkiyeFinans.Controllers
         // Kayýt Ol
         // Kayit formu tarafindan cagriliyor.
         [HttpPost]
-        public async Task<IActionResult> KayitOl(long TCKimlikNo, string Ad, string Soyad, string DogumTarihi, string Adres, string Telefon, string Email, string Pass)
-        {
-            var param = new MernisServiceParametters
-            {
-                TCKimlikNo = TCKimlikNo,
-                Ad = Ad,
-                Soyad = Soyad,
-                DogumTarihi = DogumTarihi,
-                Adres = Adres,
-                Telefon = Telefon,
-                Email = Email,
-                Pass = Pass
-            };
+        public async Task<IActionResult> KayitOlGonder(long TCKimlikNo, string Ad, string Soyad, string DogumTarihi, string Adres, string Telefon, string Email, string Pass)
+        {            
             if (TCKimlikNo == 0 || Ad == null ||  Soyad == null || DogumTarihi == null || Adres == null || Telefon == null || Email == null || Email.IndexOf("@") == -1 || TCKimlikNo.ToString().Length != 11 || Telefon.ToString().Length != 11 )
             {
                 _logger.LogError("<<<<< Girilen bilgiler kurallara uygun degil >>>>>");
@@ -58,13 +54,29 @@ namespace TurkiyeFinans.Controllers
             response._mernisserviceparametters.Soyad = Soyad;
             response._mernisserviceparametters.DogumYili = Convert.ToInt16(DogumTarihi.Substring(0,4));            
             var resault = service.OnGetService(response._mernisserviceparametters);
+            
             if (resault.Result == true)
             {
+                Customer customer = new Customer
+                {
+                    FirstName = Ad,
+                    LastName = Soyad,
+                    DateOfBirth = DogumTarihi,
+                    Address = Adres,
+                    PhoneNumber = Telefon,
+                    Email = Email,
+                    IdentificationNumber = TCKimlikNo.ToString(),
+                    Pass = Pass,
+                };
                 _logger.LogInformation("<<<<< TC: dogru >>>>>");
-                bool isAdded = await _customerOperations.AddCustomerAsync(param);
-                if (isAdded) {
+                bool isAdded = await _customerOperations.AddCustomerAsync(customer);
+                if (isAdded) {                    
+                    ViewModel viewModel = new ViewModel
+                    {
+                        _Customer = customer
+                    };
                     _logger.LogInformation("<<<<< Musteri eklendi >>>>>");
-                    return View("AnaEkran");
+                    return View("AnaEkran",viewModel);
                 }
                 else
                 {
@@ -82,11 +94,8 @@ namespace TurkiyeFinans.Controllers
         [HttpPost]
         public async Task<IActionResult> Sil(long SilTCKimlikNo)
         {
-            var param = new MernisServiceParametters
-            {
-                TCKimlikNo = SilTCKimlikNo
-            };
-            bool isDeleted = await _customerOperations.DelCustomerAsync(param);
+            Customer customer = await _customerOperations.GetCustomerAsync(SilTCKimlikNo.ToString());
+            bool isDeleted = await _customerOperations.DelCustomerAsync(customer);
             if (isDeleted)
             {
                 _logger.LogInformation("<<<<< Musteri silindi >>>>>");
@@ -101,21 +110,20 @@ namespace TurkiyeFinans.Controllers
         // Giris yapiyor
         [HttpPost]
         public async Task<IActionResult> GirisYap(long GirTCKimlikNo, string GirPass)
-        {
-            var param = new MernisServiceParametters
-            {
-                TCKimlikNo = GirTCKimlikNo,
-                Pass = GirPass
-            };
+        {            
             var viewData = new ViewModel
             {
-                _Customer = _context.Customers.Where(c => c.IdentificationNumber == GirTCKimlikNo.ToString()).ToList(),
+                _Customer = await _customerOperations.GetCustomerAsync(GirTCKimlikNo.ToString()),
             };
-            bool isVerify = await _customerOperations.VerifyCustomerAsync(param);
+            bool isVerify = await _customerOperations.VerifyCustomerAsync(viewData._Customer);
             if (isVerify)
             {
                 _logger.LogInformation("<<<<< Bilgiler dogru. Giris yapiliyor. >>>>>");
                 TempData["UserTC"]=GirTCKimlikNo.ToString();
+                if (viewData._Customer.IdentificationNumber == "11111111111")
+                {
+                    return View("Admin",viewData);
+                }
                 return View("AnaEkran",viewData);
             }
             else
@@ -129,7 +137,7 @@ namespace TurkiyeFinans.Controllers
         {
             var viewModel = new ViewModel
             {
-                _Customer = _context.Customers.ToList(),
+                _Customers = _context.Customers.ToList(),
                 
             };
             return View("Index", viewModel);
@@ -151,17 +159,14 @@ namespace TurkiyeFinans.Controllers
         [HttpPost]
         public async Task<IActionResult> HesapAc(string AccountType,int Deposit,string Currency)
         {
-            List<Customer> customerList = new List<Customer>(); 
-
             string userTC = TempData["UserTC"].ToString();
             Customer user = await _customerOperations.GetCustomerAsync(userTC);            
             bool result = await _accountOperations.AddAccountAsync(user.CustomerId,AccountType,Currency,Deposit); 
             TempData["UserTC"]=userTC;
-
-            customerList.Add(user);
+            
             ViewModel viewModel = new ViewModel
             {
-                _Customer= customerList,
+                _Customer= user,
             };
             return View("AnaEkran",viewModel);
         }
@@ -169,24 +174,18 @@ namespace TurkiyeFinans.Controllers
         [HttpPost]
         public async Task<IActionResult> HesapListele()
         {
-            List<Customer> customerList = new List<Customer>();
             string userTC = TempData["UserTC"].ToString();
             Customer user = await _customerOperations.GetCustomerAsync(userTC);
-
-            List<Account> result = await _accountOperations.ListAccountAsync(user.CustomerId);
+            List<Account> accounts = await _accountOperations.ListAccountAsync(user.CustomerId);
             TempData["UserTC"] = userTC;
-
-            customerList.Add(user);
             ViewModel viewModel = new ViewModel
             {
-                _Customer = customerList,
-                _Accounts= result
+                _Customer = user,
+                _Accounts= accounts
             };
             return View("AnaEkran",viewModel);
         }
-
-
-
+       
         public IActionResult Privacy()
         {
             return View();

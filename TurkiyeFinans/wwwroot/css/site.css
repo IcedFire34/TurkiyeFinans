@@ -1,4 +1,4 @@
-/* Genel Stil Ayarlarý */
+/* Genel Stil Ayarlarï¿½ */
 html, body {
     height: 100%;
     margin: 0;
@@ -13,7 +13,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    min-height: 100vh; /* Sayfanýn yüksekliði en az viewport yüksekliði kadar */
+    min-height: 100vh; /* Sayfanï¿½n yï¿½ksekliï¿½i en az viewport yï¿½ksekliï¿½i kadar */
 }
 
 /* Container */
@@ -25,7 +25,7 @@ body {
     box-sizing: border-box;
 }
 
-/* Baþlýklar */
+/* Baï¿½lï¿½klar */
 h1, h2, h3, h4 {
     color: #333;
 }
@@ -65,14 +65,14 @@ select {
     font-size: 16px;
 }
 
-/* Düðmeler */
+/* Dï¿½ï¿½meler */
 .btn {
     display: inline-block;
     padding: 10px 20px;
     border-radius: 4px;
     border: none;
     color: #fff;
-    background-color: #007bff;
+    background-color: #5e5e5e;
     font-size: 16px;
     cursor: pointer;
     text-align: center;
@@ -81,7 +81,7 @@ select {
 }
 
     .btn:hover {
-        background-color: #0056b3;
+        background-color: #4c4c4c;
     }
 
 /* Tablo */
@@ -104,7 +104,7 @@ select {
 
     .table th {
         font-weight: bold;
-        background-color: #007bff;
+        background-color: #09519e;
         color: #fff;
     }
 
@@ -114,13 +114,13 @@ select {
     margin-top: 15px;
 }
 
-/* Form Hata Mesajlarý */
+/* Form Hata Mesajlarï¿½ */
 .error-message {
     color: red;
     font-size: 14px;
 }
 
-/* Baþlýk Container */
+/* Baï¿½lï¿½k Container */
 .header-container {
     margin-bottom: 20px;
 }
@@ -132,9 +132,9 @@ footer {
     position: relative;
     bottom: 0;
     width: 100%;
-    margin-top: auto; /* Footer'ý sayfanýn en altýna yapýþtýrýr */
+    margin-top: auto; /* Footer'ï¿½ sayfanï¿½n en altï¿½na yapï¿½ï¿½tï¿½rï¿½r */
 }
 main {
     flex: 1;
-    padding: 20px; /* Ýçerik alaný için padding */
+    padding: 20px; /* ï¿½ï¿½erik alanï¿½ iï¿½in padding */
 }

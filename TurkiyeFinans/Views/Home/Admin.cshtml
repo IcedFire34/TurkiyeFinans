@@ -1,0 +1,62 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_TestLayout";
+}
+<!-- Customer Sil -->
+<form method="post" asp-controller="Home" asp-action="Sil">
+    <div class="form-group">
+        <label><strong>Müşteri Sil</strong></label>
+    </div>
+    <div class="form-group">
+        <label for="SilTCKimlikNo">TC no</label>
+        <input type="number" class="form-control" id="SilTCKimlikNo" name="SilTCKimlikNo" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Sil</button>
+</form>
+<!-- /Customer Sil -->
+
+<!-- Customer Listele -->
+<div class="header-container">
+    <label><strong>Müşteri Listesi</strong></label>
+    <form method="post" asp-controller="Home" asp-action="CustomerListele">
+        <button type="submit" class="btn btn-primary">Listele</button>
+    </form>
+</div>
+
+@if (Model._Customers.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>CustomerId</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>DateOfBirth</th>
+                <th>Address</th>
+                <th>PhoneNumber</th>
+                <th>Email</th>
+                <th>IdentificationNumber</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model._Customers)
+            {
+                <tr>
+                    <td>@customer.CustomerId</td>
+                    <td>@customer.FirstName</td>
+                    <td>@customer.LastName</td>
+                    <td>@customer.DateOfBirth</td>
+                    <td>@customer.Address</td>
+                    <td>@customer.PhoneNumber</td>
+                    <td>@customer.Email</td>
+                    <td>@customer.IdentificationNumber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+<!-- /Customer Listele -->
