@@ -5,3 +5,5 @@ TurkiyeFinans/appsettings.Development.json
 bin/
 obj/
 out/
+TurkiyeFinans/bin/
+TurkiyeFinans/obj/
