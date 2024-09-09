@@ -122,8 +122,7 @@ namespace TurkiyeFinans.Controllers
             {
                 _logger.LogError("<<<<< HATA: Giris yapilamadi. Girilen bilgiler yanlis >>>>>");
                 return View("Index");
-            }
-            
+            }            
         }
 
         public IActionResult CustomerListele()
@@ -152,14 +151,41 @@ namespace TurkiyeFinans.Controllers
         [HttpPost]
         public async Task<IActionResult> HesapAc(string AccountType,int Deposit,string Currency)
         {
+            List<Customer> customerList = new List<Customer>(); 
+
             string userTC = TempData["UserTC"].ToString();
             Customer user = await _customerOperations.GetCustomerAsync(userTC);            
-            bool result = await _accountOperations.AddAccountAsync(user.CustomerId,AccountType,Currency,Deposit);    
+            bool result = await _accountOperations.AddAccountAsync(user.CustomerId,AccountType,Currency,Deposit); 
             TempData["UserTC"]=userTC;
-            return RedirectToAction("HesapOlustur");
+
+            customerList.Add(user);
+            ViewModel viewModel = new ViewModel
+            {
+                _Customer= customerList,
+            };
+            return View("AnaEkran",viewModel);
         }
-        
-        
+
+        [HttpPost]
+        public async Task<IActionResult> HesapListele()
+        {
+            List<Customer> customerList = new List<Customer>();
+            string userTC = TempData["UserTC"].ToString();
+            Customer user = await _customerOperations.GetCustomerAsync(userTC);
+
+            List<Account> result = await _accountOperations.ListAccountAsync(user.CustomerId);
+            TempData["UserTC"] = userTC;
+
+            customerList.Add(user);
+            ViewModel viewModel = new ViewModel
+            {
+                _Customer = customerList,
+                _Accounts= result
+            };
+            return View("AnaEkran",viewModel);
+        }
+
+
 
         public IActionResult Privacy()
         {

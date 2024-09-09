@@ -82,7 +82,7 @@
     </form>
 </div>
 
-@if (TempData["UserTC"] != null)
+@if(Model._Customer.Any() )
 {
     <table class="table">
         <thead>
@@ -113,5 +113,7 @@
             }
         </tbody>
     </table>
+
 }
+
 <!-- /Customer Listele -->

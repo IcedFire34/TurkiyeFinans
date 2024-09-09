@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.Data.SqlClient;
 
 namespace TurkiyeFinans.Models
 {
@@ -154,5 +155,54 @@ namespace TurkiyeFinans.Models
             }
         }
 
+        public async Task<List<Account>> ListAccountAsync(int customerID)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    string checkQuery = "SELECT * FROM [dbo].[Accounts] WHERE CustomerID = @CustomerID";
+                    SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
+
+                    checkCommand.Parameters.AddWithValue("@CustomerID", customerID);
+
+                    List<Account> result = [];
+                    using (SqlDataReader reader = await checkCommand.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            // Currency bilgilerini al
+                            Account account = new Account
+                            {
+                                AccountId = reader.GetInt32(reader.GetOrdinal("AccountID")),
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerID")),
+                                AccountType = reader.GetString(reader.GetOrdinal("AccountType")),
+                                Balance = reader.GetDouble(reader.GetOrdinal("Balance")),
+                                Currency = reader.GetString(reader.GetOrdinal("Currency")),
+                                OpenDate = reader.GetString(reader.GetOrdinal("OpenDate")),
+                                Status = reader.GetString(reader.GetOrdinal("Status"))
+                            };
+                            if (account.Status == "Open")
+                            {
+                                // Listeye ekle
+                                result.Add(account);
+                            }
+                        }
+                        return result;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return null;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
     }
 }
