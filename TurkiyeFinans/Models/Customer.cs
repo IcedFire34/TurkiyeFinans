@@ -21,6 +21,8 @@ public partial class Customer
 
     public string IdentificationNumber { get; set; } = null!;
 
+    public string Pass { get; set; } = null!;
+
     public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 
     public virtual ICollection<Loan> Loans { get; set; } = new List<Loan>();

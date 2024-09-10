@@ -1,22 +1,140 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+/* Genel Stil Ayarlar� */
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100vh; /* Sayfan�n y�ksekli�i en az viewport y�ksekli�i kadar */
+}
+
+/* Container */
+.container {
+    flex: 1;
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Ba�l�klar */
+h1, h2, h3, h4 {
+    color: #333;
+}
+
+/* Formlar */
+form {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Form Grup */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* D��meler */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    color: #fff;
+    background-color: #5e5e5e;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+    .btn:hover {
+        background-color: #4c4c4c;
+    }
+
+/* Tablo */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+    .table th,
+    .table td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .table thead {
+        background-color: #f8f9fa;
+    }
+
+    .table th {
+        font-weight: bold;
+        background-color: #09519e;
+        color: #fff;
+    }
+
+/* Dinamik Alanlar */
+#currencyDropdown,
+#maturityTextbox {
+    margin-top: 15px;
+}
+
+/* Form Hata Mesajlar� */
+.error-message {
+    color: red;
+    font-size: 14px;
+}
+
+/* Ba�l�k Container */
+.header-container {
+    margin-bottom: 20px;
+}
+
+/* Footer */
+footer {    
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    margin-top: auto; /* Footer'� sayfan�n en alt�na yap��t�r�r */
+}
+main {
+    flex: 1;
+    padding: 20px; /* ��erik alan� i�in padding */
 }

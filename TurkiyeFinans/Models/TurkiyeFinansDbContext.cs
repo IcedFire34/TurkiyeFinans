@@ -17,6 +17,10 @@ public partial class TurkiyeFinansDbContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
+    public virtual DbSet<AccountVadeli> AccountVadelis { get; set; }
+
+    public virtual DbSet<AccountYatirim> AccountYatirims { get; set; }
+
     public virtual DbSet<Card> Cards { get; set; }
 
     public virtual DbSet<Currency> Currencies { get; set; }
@@ -50,9 +54,7 @@ public partial class TurkiyeFinansDbContext : DbContext
 
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.Property(e => e.AccountId)
-                .ValueGeneratedNever()
-                .HasColumnName("AccountID");
+            entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.AccountType).HasMaxLength(20);
             entity.Property(e => e.Currency).HasMaxLength(25);
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
@@ -67,7 +69,40 @@ public partial class TurkiyeFinansDbContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Accounts_Customer");
+                .HasConstraintName("FK_Accounts_Customer1");
+        });
+
+        modelBuilder.Entity<AccountVadeli>(entity =>
+        {
+            entity.HasKey(e => e.AccountId).HasName("PK_Account_Vadeli");
+
+            entity.ToTable("AccountVadeli");
+
+            entity.Property(e => e.AccountId)
+                .ValueGeneratedNever()
+                .HasColumnName("AccountID");
+
+            entity.HasOne(d => d.Account).WithOne(p => p.AccountVadeli)
+                .HasForeignKey<AccountVadeli>(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Account_Vadeli_Accounts");
+        });
+
+        modelBuilder.Entity<AccountYatirim>(entity =>
+        {
+            entity.HasKey(e => e.AccountId).HasName("PK_Account_Yatirim");
+
+            entity.ToTable("AccountYatirim");
+
+            entity.Property(e => e.AccountId)
+                .ValueGeneratedNever()
+                .HasColumnName("AccountID");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+            entity.HasOne(d => d.Account).WithOne(p => p.AccountYatirim)
+                .HasForeignKey<AccountYatirim>(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Account_Yatirim_Accounts");
         });
 
         modelBuilder.Entity<Card>(entity =>
@@ -138,13 +173,11 @@ public partial class TurkiyeFinansDbContext : DbContext
         {
             entity.ToTable("Customer");
 
-            entity.Property(e => e.CustomerId)
-                .ValueGeneratedNever()
-                .HasColumnName("CustomerID");
-            entity.Property(e => e.Address).HasMaxLength(50);
-            entity.Property(e => e.DateOfBirth).HasMaxLength(8);
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.DateOfBirth).HasMaxLength(10);
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.FirstName).HasMaxLength(50);
+            entity.Property(e => e.IdentificationNumber).HasMaxLength(11);
             entity.Property(e => e.LastName).HasMaxLength(50);
             entity.Property(e => e.PhoneNumber).HasMaxLength(12);
         });
@@ -222,7 +255,7 @@ public partial class TurkiyeFinansDbContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.Loans)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Loans_Customer");
+                .HasConstraintName("FK_Loans_Customer1");
         });
 
         modelBuilder.Entity<LoanPayment>(entity =>

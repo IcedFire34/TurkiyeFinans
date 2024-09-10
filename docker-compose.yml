@@ -7,11 +7,12 @@ services:
       dockerfile: ././TurkiyeFinans/Dockerfile
     ports:
       - "8080:80"
-      - "8081:80"
     environment:
-      - ConnectionStrings__DefaultConnection=Server=${DB_HOST},${DB_PORT};Database=TurkiyeFinansDb;User=sa;Password=${SA_PASSWORD};
+      - ConnectionStrings__DefaultConnection=Server=mssql;Database=TurkiyeFinansDb;User=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
     depends_on:
       - mssql
+    networks:
+      - turkiyefinansnet 
 
   mssql:
     container_name: mssql
@@ -23,8 +24,13 @@ services:
     ports:
       - "${DB_PORT}:1433"
     volumes:
-      - mssqldata:/var/opt/mssql
+      - mssqldata:/var/opt/mssql    
+    networks:
+      - turkiyefinansnet
 
 volumes:
   mssqldata:
 
+networks:
+  turkiyefinansnet:
+    driver: bridge

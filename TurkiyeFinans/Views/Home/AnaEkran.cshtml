@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model TurkiyeFinans.Models.ViewModel
+@{
+    Layout = "_TestLayout";
+}
+<h3>Hosgeldiniz @Model._Customer.FirstName</h3>
+
+<div class="header-container">
+    <form method="post" asp-action="HesapOlustur">
+        <input type="hidden" name="identificationNumber" value="@Model._Customer.IdentificationNumber" />
+        <button type="submit" class="btn btn-primary">Hesap Ac</button>
+    </form>   
+</div>
+<div class="header-container">
+    <form method="post" asp-action="HesapListele">
+        <button type="submit" class="btn btn-primary">Listele</button>
+    </form>
+</div>
+<div class="header-container">    
+    @if (Model._Accounts != null && Model._Accounts.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>AccountID</th>
+                    <th>CustomerID</th>
+                    <th>AccountType</th>
+                    <th>Balance</th>
+                    <th>Currency</th>
+                    <th>OpenDate</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var account in Model._Accounts)
+                {
+                    <tr>
+                        <td>@account.AccountId</td>
+                        <td>@account.CustomerId</td>
+                        <td>@account.AccountType</td>
+                        <td>@account.Balance</td>
+                        <td>@account.Currency</td>
+                        <td>@account.OpenDate</td>
+                        <td>@account.Status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    <!-- /Account Listele -->
+</div>
