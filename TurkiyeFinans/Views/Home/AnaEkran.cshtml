@@ -3,16 +3,38 @@
 *@
 @model TurkiyeFinans.Models.ViewModel
 @{
-    Layout = "_TestLayout";
+    Layout = "_TestLayout";    
 }
 <h3>Hosgeldiniz @Model._Customer.FirstName</h3>
 
-<div class="header-container">
+<div class="form-container">
+    <!-- Hesap Aç Butonu -->
     <form method="post" asp-action="HesapOlustur">
         <input type="hidden" name="identificationNumber" value="@Model._Customer.IdentificationNumber" />
-        <button type="submit" class="btn btn-primary">Hesap Ac</button>
-    </form>   
+        <button type="submit" class="btn btn-primary full-width">Hesap Aç</button>
+    </form>
+
+    <!-- Hesap Etiketi -->
+    <div class="form-content">
+        <label for="AccountType">Hesap</label>
+    </div>
+
+    <!-- Dropdownlist ve Kapat Butonu -->
+    <form method="post" asp-action="HesapKapat">
+        <div class="dropdown-and-button">          
+            <select class="form-control" id="CloseAccountID" name="CloseAccountID" required onchange="showDynamicFields()">
+                <option value="" disabled selected hidden>Seçiniz ...</option>
+                @foreach (var account in Model._Accounts)
+                {
+                    <option value="@account.AccountId">[@account.AccountId] Hesap Türü :@account.AccountType  Bakiye:@account.Balance</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-danger">Kapat</button>        
+        </div>
+    </form>
 </div>
+
+
 <div class="header-container">
     <form method="post" asp-action="HesapListele">
         <button type="submit" class="btn btn-primary">Listele</button>

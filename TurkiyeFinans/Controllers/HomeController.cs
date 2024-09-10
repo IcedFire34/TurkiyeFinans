@@ -35,6 +35,7 @@ namespace TurkiyeFinans.Controllers
             ViewModel viewModel = new ViewModel();
             return View(viewModel);
         }
+        
         // Kayýt Ol
         // Kayit formu tarafindan cagriliyor.
         [HttpPost]
@@ -113,13 +114,14 @@ namespace TurkiyeFinans.Controllers
         {            
             var viewData = new ViewModel
             {
-                _Customer = await _customerOperations.GetCustomerAsync(GirTCKimlikNo.ToString()),
+                _Customer = await _customerOperations.GetCustomerAsync(GirTCKimlikNo.ToString()),                
             };
             bool isVerify = await _customerOperations.VerifyCustomerAsync(viewData._Customer);
             if (isVerify)
             {
-                _logger.LogInformation("<<<<< Bilgiler dogru. Giris yapiliyor. >>>>>");
+                _logger.LogInformation("<<<<< Bilgiler dogru. Giris yapiliyor. >>>>>");                
                 TempData["UserTC"]=GirTCKimlikNo.ToString();
+                viewData._Accounts = await _accountOperations.ListAccountAsync(viewData._Customer.CustomerId);
                 if (viewData._Customer.IdentificationNumber == "11111111111")
                 {
                     return View("Admin",viewData);
@@ -137,10 +139,9 @@ namespace TurkiyeFinans.Controllers
         {
             var viewModel = new ViewModel
             {
-                _Customers = _context.Customers.ToList(),
-                
+                _Customers = _context.Customers.ToList(),                
             };
-            return View("Index", viewModel);
+            return View("Admin",viewModel);
         }
 
         public IActionResult AnaEkran()
@@ -163,17 +164,33 @@ namespace TurkiyeFinans.Controllers
             Customer user = await _customerOperations.GetCustomerAsync(userTC);            
             bool result = await _accountOperations.AddAccountAsync(user.CustomerId,AccountType,Currency,Deposit); 
             TempData["UserTC"]=userTC;
-            
+
             ViewModel viewModel = new ViewModel
             {
-                _Customer= user,
+                _Customer = user,
+                _Accounts = await _accountOperations.ListAccountAsync(user.CustomerId),
             };
             return View("AnaEkran",viewModel);
         }
-
         [HttpPost]
-        public async Task<IActionResult> HesapListele()
+        public async Task<IActionResult> HesapKapat(int CloseAccountID)
         {
+            string userTC = TempData["UserTC"].ToString();
+            TempData["UserTC"] = userTC;
+
+            Customer user = await _customerOperations.GetCustomerAsync(userTC);
+            bool result = await _accountOperations.CloseAccountAsync(CloseAccountID);
+            ViewModel viewModel = new ViewModel
+            {
+                _Customer = user,
+                _Accounts = await _accountOperations.ListAccountAsync(user.CustomerId),
+            };
+            return View("AnaEkran", viewModel);
+        }
+
+        
+        public async Task<IActionResult> HesapListele()
+        {            
             string userTC = TempData["UserTC"].ToString();
             Customer user = await _customerOperations.GetCustomerAsync(userTC);
             List<Account> accounts = await _accountOperations.ListAccountAsync(user.CustomerId);

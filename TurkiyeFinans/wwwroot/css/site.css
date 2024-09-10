@@ -16,6 +16,13 @@ body {
     min-height: 100vh; /* Sayfan�n y�ksekli�i en az viewport y�ksekli�i kadar */
 }
 
+/* Dropdown ve Buton Aynı Satırda Olsun */
+.dropdown-and-button {
+    display: flex;
+    align-items: center; /* Dikey hizalamayı ortalar */
+    gap: 10px; /* Dropdown ve buton arasındaki boşluk */
+}
+
 /* Container */
 .container {
     flex: 1;

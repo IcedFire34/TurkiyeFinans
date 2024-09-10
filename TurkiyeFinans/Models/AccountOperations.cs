@@ -204,5 +204,33 @@ namespace TurkiyeFinans.Models
                 }
             }
         }
+
+        public async Task<bool> CloseAccountAsync(int accountID)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    // SQL sorgusunun doğru yazımı
+                    string checkQuery = "UPDATE [dbo].[Accounts] SET Status = @Status WHERE AccountID = @AccountID";
+                    SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
+
+                    checkCommand.Parameters.AddWithValue("@Status", "Close");
+                    checkCommand.Parameters.AddWithValue("@AccountID", accountID);
+
+                    int affectedRows = await checkCommand.ExecuteNonQueryAsync();
+
+                    // Eğer etkilenen satır sayısı 0'dan büyükse işlem başarılıdır
+                    return affectedRows > 0;
+                }
+                catch (Exception ex)
+                {
+                    // Hata durumunda hata mesajını yazdır
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return false;
+                }                
+            }
+        }
     }
 }
