@@ -170,7 +170,7 @@ namespace TurkiyeFinans.Models
                     await connection.CloseAsync();
                 }
             }
-        }
+        }        
 
         // Hesaplari Listeler
         // Parametre olarak almis oldugu customerID'nin hesaplarini geri dondurur.
@@ -196,7 +196,7 @@ namespace TurkiyeFinans.Models
                             Account account = new Account
                             {
                                
-                                AccountId = reader.GetInt32(reader.GetOrdinal("AccountID")),
+                                AccountId = reader.GetDecimal(reader.GetOrdinal("AccountID")),
                                 CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerID")),
                                 AccountType = reader.GetString(reader.GetOrdinal("AccountType")),
                                 Balance = reader.GetDouble(reader.GetOrdinal("Balance")),
@@ -267,7 +267,7 @@ namespace TurkiyeFinans.Models
             string rezerveDigit = "0"; // Revize edilmis bit
             decimal mod = (Convert.ToDecimal(bankID + rezerveDigit + accountID_16 + countryValue) % 97); 
             string checkDigits = (98 - (int)mod).ToString("D2"); // Kontrol biti hesaplanıyor
-            return countryID + checkDigits + bankID + accountID_16; // IBAN geri donduruluyor
+            return countryID + checkDigits + bankID + rezerveDigit + accountID_16; // IBAN geri donduruluyor
         }
         public async Task<bool> AddIBAN(string countryID, string bankID,decimal accountID)
         {

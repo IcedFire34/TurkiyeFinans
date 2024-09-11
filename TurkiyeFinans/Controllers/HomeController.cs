@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.Diagnostics;
 using TurkiyeFinans.Models;
 
@@ -150,6 +151,18 @@ namespace TurkiyeFinans.Controllers
             ViewModel viewModel = new ViewModel();
             return View(viewModel);
         }
+        public IActionResult Transfer()
+        {
+            string userTC = TempData["UserTC"].ToString();
+            TempData["UserTC"] = userTC;
+            ViewModel viewModel = new ViewModel
+            {
+                _Customer = _customerOperations.GetCustomerAsync(userTC).Result,
+                
+            };
+            viewModel._Accounts = _accountOperations.ListAccountAsync(viewModel._Customer.CustomerId).Result;
+            return View(viewModel);
+        }
 
         public IActionResult HesapOlustur()
         {
@@ -172,7 +185,8 @@ namespace TurkiyeFinans.Controllers
                 _Accounts = await _accountOperations.ListAccountAsync(user.CustomerId),
             };
             return View("AnaEkran",viewModel);
-        }
+        }        
+
         [HttpPost]
         public async Task<IActionResult> HesapKapat(int CloseAccountID)
         {
@@ -205,7 +219,7 @@ namespace TurkiyeFinans.Controllers
 
         public async Task<IActionResult> Test()
         {
-            _logger.LogInformation("<<<<< Bu bir testtir >>>>>");            
+            _logger.LogInformation("<<<<< Bu bir testtir >>>>>");
             return RedirectToAction("AnaEkran");
         }
        

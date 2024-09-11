@@ -7,9 +7,9 @@ public partial class Transfer
 {
     public int TransferId { get; set; }
 
-    public int FromAccountId { get; set; }
+    public decimal FromAccountId { get; set; }
 
-    public int ToAccountId { get; set; }
+    public decimal ToAccountId { get; set; }
 
     public double Amount { get; set; }
 

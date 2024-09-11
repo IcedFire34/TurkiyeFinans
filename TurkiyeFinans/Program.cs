@@ -17,6 +17,8 @@ builder.Services.AddSingleton(new CustomerOperations(connectionString));
 builder.Services.AddSingleton(new AccountOperations(connectionString));
 // CurrencyOperations için DI ayarý
 builder.Services.AddSingleton(new CurrencyOperations(connectionString));
+// TransferOperations için DI ayarý
+builder.Services.AddSingleton(new TransferOperations(connectionString));
 
 var app = builder.Build();
 

@@ -1,7 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model TurkiyeFinans.Models.ViewModel
+﻿@model TurkiyeFinans.Models.ViewModel
 @{
     Layout = "_TestLayout";    
 }
@@ -38,6 +35,12 @@
     </form>
 </div> *@
 
+<div class="header-container">
+    <form method="post" asp-action="Transfer">
+        <button type="submit" class="btn btn-primary">Transfer</button>
+    </form>
+</div>
+
 
 
 <div class="header-container">    
@@ -67,7 +70,7 @@
                         <td>@account.Currency</td>
                         <td>@account.OpenDate</td>
                         <td>@account.Status</td>
-                        <td>@account.Iban</td>
+                        <td>@Model.FormatIban(account.Iban)</td>
                     </tr>
                 }
             </tbody>

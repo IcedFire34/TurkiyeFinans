@@ -1,0 +1,25 @@
+﻿@model TurkiyeFinans.Models.ViewModel
+@{
+    Layout = "_TestLayout";
+}
+<div class="form-container">
+    <form class="custom-form">
+        <label for="senderAccount">Gönderici Hesabı</label>
+        <select id="senderAccount" class="dropdownlist">
+            <option value="" disabled selected hidden>Seçiniz ...</option>
+            @if (Model._Accounts != null && Model._Accounts.Any())
+            {
+                @foreach (var account in Model._Accounts)
+                {
+                    @if(account.AccountType == "Vadesiz"){
+                        <option value="@account.AccountId">[@account.AccountId] Bakiye:@account.Balance</option>
+                    }
+                }
+            }
+        </select>
+        <input type="text" id="recipientIBAN" class="textbox" placeholder="Alıcı IBAN">
+        <input type="text" id="recipientName" class="textbox" placeholder="Alıcı isim soy isim">
+        <input type="text" id="recipientLot" class="textbox" placeholder="Gönderilecek Miktar">
+        <button type="submit" class="btn">Gönder</button>
+    </form>
+</div>
