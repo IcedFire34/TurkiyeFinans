@@ -13,12 +13,7 @@
         <input type="hidden" name="identificationNumber" value="@Model._Customer.IdentificationNumber" />
         <button type="submit" class="btn btn-primary full-width">Hesap Aç</button>
     </form>
-
-    <!-- Hesap Etiketi -->
-    <div class="form-content">
-        <label for="AccountType">Hesap</label>
-    </div>
-
+    
     <!-- Dropdownlist ve Kapat Butonu -->
     <form method="post" asp-action="HesapKapat">
         <div class="dropdown-and-button">          
@@ -37,12 +32,14 @@
     </form>
 </div>
 
-
-<div class="header-container">
+@* <div class="header-container">
     <form method="post" asp-action="Test">
         <button type="submit" class="btn btn-primary">TEST</button>
     </form>
-</div>
+</div> *@
+
+
+
 <div class="header-container">    
     @if (Model._Accounts != null && Model._Accounts.Any())
     {

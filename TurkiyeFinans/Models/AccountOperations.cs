@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.Data.SqlClient;
+using Microsoft.Identity.Client;
 using System.Numerics;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TurkiyeFinans.Models
 {
@@ -61,15 +63,8 @@ namespace TurkiyeFinans.Models
 
                         //IBAN ekle
                         if(accountType == "Vadesiz")
-                        {
-                            insertIBANQuery = "UPDATE [dbo].[Accounts] SET Iban = @Iban WHERE AccountID = @AccountID";
-                            SqlCommand insertIBANCommand = new SqlCommand(insertIBANQuery, connection);
-
-                            insertIBANCommand.Parameters.AddWithValue("@AccountID", accountID);
-                            insertIBANCommand.Parameters.AddWithValue("@Iban",GenerateIBAN("TR","00010",Convert.ToDecimal(accountID)));
-
-                            int resultIBAN = await insertIBANCommand.ExecuteNonQueryAsync();
-                           
+                        {                            
+                            bool resultIBAN = AddIBAN("TR","00010",accountID).Result;                           
                         }
                         
 
@@ -102,13 +97,7 @@ namespace TurkiyeFinans.Models
                         int accountID = Convert.ToInt32(insertAccountCommand.ExecuteScalar());
 
                         //IBAN ekle
-                        insertIBANQuery = "UPDATE [dbo].[Accounts] SET Iban = @Iban WHERE AccountID = @AccountID";
-                        SqlCommand insertIBANCommand = new SqlCommand(insertIBANQuery, connection);
-
-                        insertIBANCommand.Parameters.AddWithValue("@AccountID", accountID);
-                        insertIBANCommand.Parameters.AddWithValue("@Iban", GenerateIBAN("TR", "00010", accountID));
-
-                        int resultIBAN = await insertIBANCommand.ExecuteNonQueryAsync();
+                        bool resultIBAN = AddIBAN("TR", "00010", accountID).Result;                        
 
                         // Vadeili tablosuna ekler //
 
@@ -275,11 +264,40 @@ namespace TurkiyeFinans.Models
         {
             string countryValue = (countryID[0] - 'A' + 10).ToString() + (countryID[1] - 'A' + 10).ToString() + "00" ; // Harflerin sayısal degerini hesapla
             string accountID_16 = accountID.ToString().PadLeft(16,'0'); // AccountId'yi 16 haneye cikariyor
-            string rezerveDigit = "0";
-            decimal mod = (Convert.ToDecimal(bankID + rezerveDigit + accountID_16 + countryValue) % 97);
-            string checkDigits = (98 - (int)mod).ToString("D2");
-            return countryID + checkDigits + bankID + accountID_16;
-
+            string rezerveDigit = "0"; // Revize edilmis bit
+            decimal mod = (Convert.ToDecimal(bankID + rezerveDigit + accountID_16 + countryValue) % 97); 
+            string checkDigits = (98 - (int)mod).ToString("D2"); // Kontrol biti hesaplanıyor
+            return countryID + checkDigits + bankID + accountID_16; // IBAN geri donduruluyor
         }
+        public async Task<bool> AddIBAN(string countryID, string bankID,decimal accountID)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string updateIBANQuery = "UPDATE [dbo].[Accounts] SET Iban = @Iban WHERE AccountID = @AccountID";
+                    SqlCommand insertIBANCommand = new SqlCommand(updateIBANQuery, connection);
+
+                    insertIBANCommand.Parameters.AddWithValue("@AccountID", accountID);
+                    insertIBANCommand.Parameters.AddWithValue("@Iban", GenerateIBAN(countryID, bankID, Convert.ToDecimal(accountID)));
+
+                    int resultIBAN = await insertIBANCommand.ExecuteNonQueryAsync();
+                    
+                    return resultIBAN > 0;
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return false;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }        
+        
     }
 }
