@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.Data.SqlClient;
+using System.Numerics;
 
 namespace TurkiyeFinans.Models
 {
@@ -24,6 +25,7 @@ namespace TurkiyeFinans.Models
                     // 1. Account ekle
                     // int CustomerID ; string AccountType ; float Balance ; string Currency ; string OpenDate ; string Status
                     string insertQuery = "";
+                    string insertIBANQuery = "";
                     TimeZoneInfo timeZone;
                     DateTime localTime;
 
@@ -38,8 +40,8 @@ namespace TurkiyeFinans.Models
                                 currency = "AU";
                                 break;
                         }
-                        insertQuery = "INSERT INTO [dbo].[Accounts] (CustomerID, AccountType, Balance, Currency, OpenDate, Status) " +
-                        "VALUES (@CustomerID, @AccountType, @Balance, @Currency, @OpenDate, @Status)";
+                        insertQuery = "INSERT INTO [dbo].[Accounts] (CustomerID, AccountType, Balance, Currency, OpenDate, Status, Iban) " +
+                        "VALUES (@CustomerID, @AccountType, @Balance, @Currency, @OpenDate, @Status, @Iban); SELECT SCOPE_IDENTITY()";
                         SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
 
                         timeZone = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
@@ -52,20 +54,35 @@ namespace TurkiyeFinans.Models
                         insertCommand.Parameters.AddWithValue("@Currency", currency);
                         insertCommand.Parameters.AddWithValue("@OpenDate", localTime.ToString("dd/MM/yyyy HH:mm:ss"));
                         insertCommand.Parameters.AddWithValue("@Status", "Open");
+                        insertCommand.Parameters.AddWithValue("@Iban", DBNull.Value);
 
-                        // ExecuteNonQuery, etkilenen satır sayısını döndürür
-                        int result = await insertCommand.ExecuteNonQueryAsync();
+                        // Son kaydin accountID'sini geri dondurur
+                        decimal accountID = Convert.ToDecimal(insertCommand.ExecuteScalar());
+
+                        //IBAN ekle
+                        if(accountType == "Vadesiz")
+                        {
+                            insertIBANQuery = "UPDATE [dbo].[Accounts] SET Iban = @Iban WHERE AccountID = @AccountID";
+                            SqlCommand insertIBANCommand = new SqlCommand(insertIBANQuery, connection);
+
+                            insertIBANCommand.Parameters.AddWithValue("@AccountID", accountID);
+                            insertIBANCommand.Parameters.AddWithValue("@Iban",GenerateIBAN("TR","00010",Convert.ToDecimal(accountID)));
+
+                            int resultIBAN = await insertIBANCommand.ExecuteNonQueryAsync();
+                           
+                        }
+                        
 
                         // Eğer ekleme başarılıysa 1 döner, aksi takdirde 0
-                        return result > 0;
+                        return accountID > 0;
 
                     }
                     else if (accountType == "Vadeli")
                     {
                         // Accounts a ekleniyor //
 
-                        insertQuery = "INSERT INTO [dbo].[Accounts] (CustomerID, AccountType, Balance, Currency, OpenDate, Status) " +
-                        "VALUES (@CustomerID, @AccountType, @Balance, @Currency, @OpenDate, @Status);" + "SELECT SCOPE_IDENTITY();";
+                        insertQuery = "INSERT INTO [dbo].[Accounts] (CustomerID, AccountType, Balance, Currency, OpenDate, Status, Iban) " +
+                        "VALUES (@CustomerID, @AccountType, @Balance, @Currency, @OpenDate, @Status, @Iban);" + "SELECT SCOPE_IDENTITY();";
 
                         SqlCommand insertAccountCommand = new SqlCommand(insertQuery, connection);
 
@@ -79,12 +96,22 @@ namespace TurkiyeFinans.Models
                         insertAccountCommand.Parameters.AddWithValue("@Currency", "TL");
                         insertAccountCommand.Parameters.AddWithValue("@OpenDate", localTime.ToString("dd/MM/yyyy HH:mm:ss"));
                         insertAccountCommand.Parameters.AddWithValue("@Status", "Open");
+                        insertAccountCommand.Parameters.AddWithValue("@Iban", DBNull.Value);
 
                         // Son kaydin accountID'sini geri dondurur
                         int accountID = Convert.ToInt32(insertAccountCommand.ExecuteScalar());
-                        
+
+                        //IBAN ekle
+                        insertIBANQuery = "UPDATE [dbo].[Accounts] SET Iban = @Iban WHERE AccountID = @AccountID";
+                        SqlCommand insertIBANCommand = new SqlCommand(insertIBANQuery, connection);
+
+                        insertIBANCommand.Parameters.AddWithValue("@AccountID", accountID);
+                        insertIBANCommand.Parameters.AddWithValue("@Iban", GenerateIBAN("TR", "00010", accountID));
+
+                        int resultIBAN = await insertIBANCommand.ExecuteNonQueryAsync();
+
                         // Vadeili tablosuna ekler //
-                        
+
                         string insertVadeliQuery = "INSERT INTO [dbo].[Account_Vadeli] (AccountID, Vade) " +
                         "VALUES (@AccountID, @Vade);";
 
@@ -104,8 +131,8 @@ namespace TurkiyeFinans.Models
                     {
                         // Accounts a ekleniyor //
 
-                        insertQuery = "INSERT INTO [dbo].[Accounts] (CustomerID, AccountType, Balance, Currency, OpenDate, Status) " +
-                        "VALUES (@CustomerID, @AccountType, @Balance, @Currency, @OpenDate, @Status);" + "SELECT SCOPE_IDENTITY();";
+                        insertQuery = "INSERT INTO [dbo].[Accounts] (CustomerID, AccountType, Balance, Currency, OpenDate, Status, Iban) " +
+                        "VALUES (@CustomerID, @AccountType, @Balance, @Currency, @OpenDate, @Status, @Iban);" + "SELECT SCOPE_IDENTITY();";
 
                         SqlCommand insertAccountCommand = new SqlCommand(insertQuery, connection);
 
@@ -119,6 +146,7 @@ namespace TurkiyeFinans.Models
                         insertAccountCommand.Parameters.AddWithValue("@Currency", "TL");
                         insertAccountCommand.Parameters.AddWithValue("@OpenDate", localTime.ToString("dd/MM/yyyy HH:mm:ss"));
                         insertAccountCommand.Parameters.AddWithValue("@Status", "Open");
+                        insertAccountCommand.Parameters.AddWithValue("@Iban", DBNull.Value);
 
                         // Son kaydin accountID'sini geri dondurur
                         int accountID = Convert.ToInt32(insertAccountCommand.ExecuteScalar());
@@ -155,6 +183,8 @@ namespace TurkiyeFinans.Models
             }
         }
 
+        // Hesaplari Listeler
+        // Parametre olarak almis oldugu customerID'nin hesaplarini geri dondurur.
         public async Task<List<Account>> ListAccountAsync(int customerID)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -168,22 +198,26 @@ namespace TurkiyeFinans.Models
 
                     checkCommand.Parameters.AddWithValue("@CustomerID", customerID);
 
-                    List<Account> result = [];
+                    List<Account> result = new List<Account>();
                     using (SqlDataReader reader = await checkCommand.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            // Currency bilgilerini al
+                            // Account bilgilerini al
                             Account account = new Account
                             {
+                               
                                 AccountId = reader.GetInt32(reader.GetOrdinal("AccountID")),
                                 CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerID")),
                                 AccountType = reader.GetString(reader.GetOrdinal("AccountType")),
                                 Balance = reader.GetDouble(reader.GetOrdinal("Balance")),
                                 Currency = reader.GetString(reader.GetOrdinal("Currency")),
                                 OpenDate = reader.GetString(reader.GetOrdinal("OpenDate")),
-                                Status = reader.GetString(reader.GetOrdinal("Status"))
-                            };
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                Iban = !reader.IsDBNull(reader.GetOrdinal("Iban"))
+                                       ? reader.GetString(reader.GetOrdinal("Iban"))
+                                       : null
+                            };                            
                             if (account.Status == "Open")
                             {
                                 // Listeye ekle
@@ -205,6 +239,8 @@ namespace TurkiyeFinans.Models
             }
         }
 
+        // Hesabi kapatir
+        // Parametre olarak aldigi accountID'yi kapatir.
         public async Task<bool> CloseAccountAsync(int accountID)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -231,6 +267,19 @@ namespace TurkiyeFinans.Models
                     return false;
                 }                
             }
+        }
+    
+        // Iban olusturur ve accounta ekler.        
+        // Parametre olarak aldigi (ulkeID, bankID, accountID) degerlerine gore Iban olusturur.
+        public string GenerateIBAN(string countryID, string bankID, decimal accountID)
+        {
+            string countryValue = (countryID[0] - 'A' + 10).ToString() + (countryID[1] - 'A' + 10).ToString() + "00" ; // Harflerin sayısal degerini hesapla
+            string accountID_16 = accountID.ToString().PadLeft(16,'0'); // AccountId'yi 16 haneye cikariyor
+            string rezerveDigit = "0";
+            decimal mod = (Convert.ToDecimal(bankID + rezerveDigit + accountID_16 + countryValue) % 97);
+            string checkDigits = (98 - (int)mod).ToString("D2");
+            return countryID + checkDigits + bankID + accountID_16;
+
         }
     }
 }

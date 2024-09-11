@@ -24,20 +24,23 @@
         <div class="dropdown-and-button">          
             <select class="form-control" id="CloseAccountID" name="CloseAccountID" required onchange="showDynamicFields()">
                 <option value="" disabled selected hidden>Seçiniz ...</option>
-                @foreach (var account in Model._Accounts)
+                @if (Model._Accounts != null && Model._Accounts.Any())
                 {
-                    <option value="@account.AccountId">[@account.AccountId] Hesap Türü :@account.AccountType  Bakiye:@account.Balance</option>
-                }
+                    @foreach (var account in Model._Accounts)
+                    {
+                        <option value="@account.AccountId">[@account.AccountId] Hesap Türü :@account.AccountType  Bakiye:@account.Balance</option>
+                    }
+                }                
             </select>
-            <button type="submit" class="btn btn-danger">Kapat</button>        
+            <button type="submit" class="btn btn-danger">Hesap Kapat</button>        
         </div>
     </form>
 </div>
 
 
 <div class="header-container">
-    <form method="post" asp-action="HesapListele">
-        <button type="submit" class="btn btn-primary">Listele</button>
+    <form method="post" asp-action="Test">
+        <button type="submit" class="btn btn-primary">TEST</button>
     </form>
 </div>
 <div class="header-container">    
@@ -53,6 +56,7 @@
                     <th>Currency</th>
                     <th>OpenDate</th>
                     <th>Status</th>
+                    <th>IBAN</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,6 +70,7 @@
                         <td>@account.Currency</td>
                         <td>@account.OpenDate</td>
                         <td>@account.Status</td>
+                        <td>@account.Iban</td>
                     </tr>
                 }
             </tbody>

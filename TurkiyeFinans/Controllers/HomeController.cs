@@ -121,6 +121,7 @@ namespace TurkiyeFinans.Controllers
             {
                 _logger.LogInformation("<<<<< Bilgiler dogru. Giris yapiliyor. >>>>>");                
                 TempData["UserTC"]=GirTCKimlikNo.ToString();
+
                 viewData._Accounts = await _accountOperations.ListAccountAsync(viewData._Customer.CustomerId);
                 if (viewData._Customer.IdentificationNumber == "11111111111")
                 {
@@ -187,7 +188,6 @@ namespace TurkiyeFinans.Controllers
             };
             return View("AnaEkran", viewModel);
         }
-
         
         public async Task<IActionResult> HesapListele()
         {            
@@ -201,6 +201,12 @@ namespace TurkiyeFinans.Controllers
                 _Accounts= accounts
             };
             return View("AnaEkran",viewModel);
+        }
+
+        public async Task<IActionResult> Test()
+        {
+            _logger.LogInformation("<<<<< Bu bir testtir >>>>>");            
+            return RedirectToAction("AnaEkran");
         }
        
         public IActionResult Privacy()
