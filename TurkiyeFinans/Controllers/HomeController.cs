@@ -220,6 +220,7 @@ namespace TurkiyeFinans.Controllers
         public async Task<IActionResult> Test()
         {
             _logger.LogInformation("<<<<< Bu bir testtir >>>>>");
+            Console.WriteLine(_accountOperations.Withdraw(4050,1000).Result);
             return RedirectToAction("AnaEkran");
         }
        

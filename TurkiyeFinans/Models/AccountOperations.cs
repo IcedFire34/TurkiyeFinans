@@ -218,7 +218,7 @@ namespace TurkiyeFinans.Models
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Hata: " + ex.Message);
+                    Console.WriteLine("Hata: " + ex);
                     return null;
                 }
                 finally
@@ -299,5 +299,141 @@ namespace TurkiyeFinans.Models
             }
         }        
         
+        // Para yatirma
+        public async Task<bool> Deposit(decimal accountID,double amount)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    // Hesaptaki balance değerini al
+
+                    Account account;
+                    string selectAccountQuery = "SELECT * FROM [dbo].[Accounts] WHERE AccountID = @AccountID";
+
+                    SqlCommand selectAccountCommand = new SqlCommand(selectAccountQuery, connection);
+
+                    selectAccountCommand.Parameters.AddWithValue("@AccountID", accountID);
+
+                    using (SqlDataReader reader = await selectAccountCommand.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            account = new Account
+                            {
+                                AccountId = reader.GetDecimal(reader.GetOrdinal("AccountID")),
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerID")),
+                                AccountType = reader.GetString(reader.GetOrdinal("AccountType")),
+                                Balance = reader.GetDouble(reader.GetOrdinal("Balance")),
+                                Currency = reader.GetString(reader.GetOrdinal("Currency")),
+                                OpenDate = reader.GetString(reader.GetOrdinal("OpenDate")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                Iban = reader.GetString(reader.GetOrdinal("Iban"))
+                            };
+                        }
+                        else
+                        {
+                            return false;
+                        }                            
+                    }
+
+                    // Hesaba yatır
+                    double newBalance = account.Balance + amount;
+                    string updateBalanceQuery = "UPDATE [dbo].[Accounts] SET Balance = @Balance WHERE AccountID = @AccountID";
+                    SqlCommand updateBalanceCommand = new SqlCommand(updateBalanceQuery, connection);
+
+                    updateBalanceCommand.Parameters.AddWithValue("@Balance",newBalance);
+                    updateBalanceCommand.Parameters.AddWithValue("@AccountID", accountID);
+
+                    int resultBalance = await updateBalanceCommand.ExecuteNonQueryAsync();
+
+                    return resultBalance > 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return false;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+        // Para cekme
+        public async Task<bool> Withdraw(decimal accountID, double amount)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+
+                    // Hesaptaki balance değerini al
+
+                    Account account;
+                    string selectAccountQuery = "SELECT * FROM [dbo].[Accounts] WHERE AccountID = @AccountID";
+
+                    SqlCommand selectAccountCommand = new SqlCommand(selectAccountQuery, connection);
+
+                    selectAccountCommand.Parameters.AddWithValue("@AccountID", accountID);
+
+                    using (SqlDataReader reader = await selectAccountCommand.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            account = new Account
+                            {
+                                AccountId = reader.GetDecimal(reader.GetOrdinal("AccountID")),
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerID")),
+                                AccountType = reader.GetString(reader.GetOrdinal("AccountType")),
+                                Balance = reader.GetDouble(reader.GetOrdinal("Balance")),
+                                Currency = reader.GetString(reader.GetOrdinal("Currency")),
+                                OpenDate = reader.GetString(reader.GetOrdinal("OpenDate")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                Iban = reader.GetString(reader.GetOrdinal("Iban"))
+                            };
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+
+                    // Hesaptan cek
+                    if (account.Balance>= amount )
+                    {
+                        double newBalance = account.Balance - amount;
+                        string updateBalanceQuery = "UPDATE [dbo].[Accounts] SET Balance = @Balance WHERE AccountID = @AccountID";
+                        SqlCommand updateBalanceCommand = new SqlCommand(updateBalanceQuery, connection);
+
+                        updateBalanceCommand.Parameters.AddWithValue("@Balance", newBalance);
+                        updateBalanceCommand.Parameters.AddWithValue("@AccountID", accountID);
+
+                        int resultBalance = await updateBalanceCommand.ExecuteNonQueryAsync();
+
+                        return resultBalance > 0;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return false;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+
+        }
+
     }
 }
