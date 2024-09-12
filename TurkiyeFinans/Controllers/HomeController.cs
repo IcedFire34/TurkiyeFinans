@@ -223,7 +223,19 @@ namespace TurkiyeFinans.Controllers
             Console.WriteLine(_accountOperations.Withdraw(4050,1000).Result);
             return RedirectToAction("AnaEkran");
         }
-       
+       public IActionResult MevduatHesapla(float tutar,float vade,float faizOrani=40f,float stopajOrani=7.5f)
+        {
+            ViewBag.Vade = vade;
+            ViewBag.FaizOrani = faizOrani;            
+            ViewBag.BürütFaizTutari =tutar * faizOrani * (vade/36600);
+            ViewBag.StopajOrani = stopajOrani;
+            float StopajTutari = ViewBag.BürütFaizTutari * (stopajOrani / 100);
+            ViewBag.StopajTutari = (StopajTutari).ToString("N2");
+            float NetFaizTutari = ViewBag.BürütFaizTutari - StopajTutari;
+            ViewBag.NetFaizTutari = NetFaizTutari.ToString("N2");
+            ViewBag.VadeSonuTutari = (tutar + NetFaizTutari).ToString("N2");
+            return View("Index");
+        }
         public IActionResult Privacy()
         {
             return View();
