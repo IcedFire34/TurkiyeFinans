@@ -2,51 +2,45 @@
 @{
     Layout = "_TestLayout";    
 }
-<h3>Hosgeldiniz @Model._Customer.FirstName</h3>
-
-<div class="form-container">
-    <!-- Hesap Aç Butonu -->
-    <form method="post" asp-action="HesapOlustur">
+<div class="form-container">    
+    <form method="post" >
         <input type="hidden" name="identificationNumber" value="@Model._Customer.IdentificationNumber" />
-        <button type="submit" class="btn btn-primary full-width">Hesap Aç</button>
-    </form>
-    
-    <!-- Dropdownlist ve Kapat Butonu -->
-    <form method="post" asp-action="HesapKapat">
-        <div class="dropdown-and-button">          
-            <select class="form-control" id="CloseAccountID" name="CloseAccountID" required onchange="showDynamicFields()">
-                <option value="" disabled selected hidden>Seçiniz ...</option>
-                @if (Model._Accounts != null && Model._Accounts.Any())
-                {
-                    @foreach (var account in Model._Accounts)
-                    {
-                        <option value="@account.AccountId">[@account.AccountId] Hesap Türü :@account.AccountType  Bakiye:@account.Balance</option>
-                    }
-                }                
-            </select>
-            <button type="submit" class="btn btn-danger">Hesap Kapat</button>        
-        </div>
-    </form>
+        <!-- Hesap Aç Butonu -->
+        <button type="submit" class="btn btn-primary full-width" asp-action="HesapOlustur" >Hesap Aç</button>
+        <!-- Havale Yap Butonu -->
+        <button type="submit" class="btn btn-primary" asp-action="Transfer">Havale</button>
+        <!-- Hesap Listele Butonu -->
+        <button type="submit" class="btn btn-primary" asp-action="HesapListele">Listele</button>
+        <!-- Para Yatır Butonu -->
+        <button type="submit" class="btn btn-primary" asp-action="ParaYatir">Para Yatır</button>     
+        <!-- PAra çek Butonu -->
+        <button type="submit" class="btn btn-primary" asp-action="ParaCek">Para Çek</button>
+        <!-- Islemler Butonu -->
+        <button type="submit" class="btn btn-primary" asp-action="">İslemler</button>
+    </form>  
 </div>
-
-<div class="header-container">
+<!-- Dropdownlist ve Kapat Butonu -->
+<div class="dropdown-and-button">
+    <select class="form-control" id="CloseAccountID" name="CloseAccountID" required onchange="showDynamicFields()">
+        <option value="" disabled selected hidden>Seçiniz ...</option>
+        @if (Model._Accounts != null && Model._Accounts.Any())
+        {
+            @foreach (var account in Model._Accounts)
+            {
+                <option value="@account.AccountId">[@account.AccountId] Hesap Türü :@account.AccountType  Bakiye:@account.Balance</option>
+            }
+        }
+    </select>
+    <button type="submit" class="btn btn-danger" asp-action="HesapKapat">Hesap Kapat</button>
+</div>
+<!-- Test Amacli buton. gerektiginde kullanilir. -->
+@* <div class="header-container">
     <form method="post" asp-action="Test">
         <button type="submit" class="btn btn-primary">TEST</button>
     </form>
-</div>
+</div> *@
 
-<div class="header-container">
-    <form method="post" asp-action="Transfer">
-        <button type="submit" class="btn btn-primary">Havale</button>
-    </form>
-</div>
-
-<div class="header-container">
-    <form method="post" asp-action="HesapListele">
-        <button type="submit" class="btn btn-primary">Listele</button>
-    </form>
-</div>
-
+<!-- /Account Listele -->
 <div class="header-container">    
     @if (Model._Accounts != null && Model._Accounts.Any())
     {
@@ -79,6 +73,5 @@
                 }
             </tbody>
         </table>
-    }
-    <!-- /Account Listele -->
+    }   
 </div>

@@ -6,6 +6,7 @@
         public List<Customer> _Customers { get; set; }
         public List<Account> _Accounts { get; set; }
         public List<Currency> _Currency { get; set; }
+        public List<Transaction> _Transactions { get; set; }
         public Customer _Customer { get; set; }
         public ViewModel() {
             _mernisserviceparametters = new MernisServiceParametters();  
@@ -13,6 +14,7 @@
             _Currency = new List<Currency>();
             _Accounts = new List<Account>();
             _Customer = new Customer();
+            _Transactions = new List<Transaction>();
         }
         public string? FormatIban(string? iban)
         {            

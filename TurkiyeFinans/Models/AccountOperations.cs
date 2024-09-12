@@ -300,7 +300,7 @@ namespace TurkiyeFinans.Models
         }        
         
         // Para yatirma
-        public async Task<bool> Deposit(decimal accountID,double amount)
+        public async Task<bool> Deposit(decimal accountID,double amount,string? description = null)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -349,6 +349,10 @@ namespace TurkiyeFinans.Models
 
                     int resultBalance = await updateBalanceCommand.ExecuteNonQueryAsync();
 
+                    // Transactiona kaydet
+                    TransactionOperations transactionOperations = new TransactionOperations(_connectionString);
+                    int transactionID= await transactionOperations.AddTransaction(accountID, "Deposit", amount, "TL", description);
+
                     return resultBalance > 0;
                 }
                 catch (Exception ex)
@@ -363,7 +367,7 @@ namespace TurkiyeFinans.Models
             }
         }
         // Para cekme
-        public async Task<bool> Withdraw(decimal accountID, double amount)
+        public async Task<bool> Withdraw(decimal accountID, double amount,string? description=null)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -414,12 +418,17 @@ namespace TurkiyeFinans.Models
 
                         int resultBalance = await updateBalanceCommand.ExecuteNonQueryAsync();
 
+                        // Transactiona kaydet
+                        TransactionOperations transactionOperations = new TransactionOperations(_connectionString);
+                        int transactionID = await transactionOperations.AddTransaction(accountID, "Deposit", amount, "TL", description);
+
                         return resultBalance > 0;
                     }
                     else
                     {
                         return false;
                     }
+
                     
                 }
                 catch (Exception ex)

@@ -40,16 +40,22 @@ namespace TurkiyeFinans.Models
         {
             //  decimal FromAccountID, decimal ToAccountID, float Amount, string Currency, string TransferDate, double FromBalance
             AccountOperations accountOperations = new AccountOperations(_connectionString);
+            CustomerOperations customerOperations = new CustomerOperations(_connectionString);
+
+            Account Gonderen = accountOperations.GetAccountWithAccountId(senderAccount).Result;
+            Account Alan = accountOperations.GetAccountWithIBAN(recipientIBAN.Replace(" ", "")).Result;
+            if(Alan == null || Gonderen == null || recipientName == null || recipientAmount == 0)return false;
+            Customer AlanKisi = customerOperations.GetCustomerWithCustomerIDAsync(Alan.CustomerId).Result;
             Transfer transfer = new Transfer
             {
                 FromAccountId = senderAccount,
-                ToAccountId = accountOperations.GetAccountWithIBAN(recipientIBAN.Replace(" ", "")).Result.AccountId,
+                ToAccountId = Alan.AccountId,
                 Amount = recipientAmount,
                 Currency = "TL",
                 TransferDate = (TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time"))).ToString("dd/MM/yyyy HH:mm:ss"),
-                FromBalance = accountOperations.GetAccountWithAccountId(senderAccount).Result.Balance,
+                FromBalance = Gonderen.Balance,
             };
-            if (transfer.Amount <= transfer.FromBalance)
+            if (transfer.Amount <= transfer.FromBalance && recipientName == AlanKisi.FirstName + " " + AlanKisi.LastName)
             {
                 bool gitti = accountOperations.Deposit(transfer.ToAccountId, transfer.Amount).Result;
                 bool cikti = accountOperations.Withdraw(transfer.FromAccountId, transfer.Amount).Result;

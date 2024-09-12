@@ -16,15 +16,19 @@ namespace TurkiyeFinans.Controllers
         private readonly TurkiyeFinansDbContext _context;
         private readonly CurrencyOperations _currencyOperations;
         private readonly TransferOperations _transferOperations;
-        
-        public HomeController(ILogger<HomeController> logger, CustomerOperations customerOperations, TurkiyeFinansDbContext context, AccountOperations accountOperations, CurrencyOperations currencyOperations, TransferOperations transferOperations)
+        private readonly TransactionOperations _transactionOperations;
+        public HomeController(ILogger<HomeController> logger, CustomerOperations customerOperations,
+            TurkiyeFinansDbContext context, AccountOperations accountOperations,
+            CurrencyOperations currencyOperations, TransferOperations transferOperations, 
+            TransactionOperations transactionOperations)
         {
             _logger = logger;
             _customerOperations = customerOperations;
             _context = context;
             _accountOperations = accountOperations;
-            _currencyOperations = currencyOperations;     
+            _currencyOperations = currencyOperations;
             _transferOperations = transferOperations;
+            _transactionOperations = transactionOperations;
         }
         public IActionResult Login()
         {
@@ -224,6 +228,18 @@ namespace TurkiyeFinans.Controllers
         {
             _logger.LogInformation("<<<<< Bu bir testtir >>>>>");
             Console.WriteLine(_accountOperations.GetAccountWithAccountId(4051).Result.Iban);
+            return RedirectToAction("AnaEkran");
+        }
+        public async Task<IActionResult> ParaYatir()
+        {
+            _logger.LogInformation("<<<<< Bu bir testtir >>>>>");
+            Console.WriteLine(_accountOperations.Deposit(4050,1000,"Para yatir test"));
+            return RedirectToAction("AnaEkran");
+        }
+        public async Task<IActionResult> ParaCek()
+        {
+            _logger.LogInformation("<<<<< Bu bir testtir >>>>>");
+            Console.WriteLine(_accountOperations.Withdraw(4050, 70, "Para Cek test"));
             return RedirectToAction("AnaEkran");
         }
         public async Task<IActionResult> HavaleYap(decimal senderAccount, string recipientIBAN, string recipientName, double recipientAmount)
