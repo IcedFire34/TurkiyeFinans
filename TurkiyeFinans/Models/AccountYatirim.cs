@@ -5,7 +5,7 @@ namespace TurkiyeFinans.Models;
 
 public partial class AccountYatirim
 {
-    public int AccountId { get; set; }
+    public decimal AccountId { get; set; }
 
     public string? StockName { get; set; }
 

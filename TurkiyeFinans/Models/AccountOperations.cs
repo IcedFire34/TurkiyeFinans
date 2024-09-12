@@ -435,5 +435,103 @@ namespace TurkiyeFinans.Models
 
         }
 
+        public async Task<Account> GetAccountWithIBAN(string Iban)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    // Hesaptaki balance değerini al
+                    Console.WriteLine(Iban);
+                    string selectAccountQuery = "SELECT * FROM [dbo].[Accounts] WHERE Iban = @Iban";
+
+                    SqlCommand selectAccountCommand = new SqlCommand(selectAccountQuery, connection);
+
+                    selectAccountCommand.Parameters.AddWithValue("@Iban", Iban);
+
+                    using (SqlDataReader reader = await selectAccountCommand.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            return new Account
+                            {
+                                AccountId = reader.GetDecimal(reader.GetOrdinal("AccountID")),
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerID")),
+                                AccountType = reader.GetString(reader.GetOrdinal("AccountType")),
+                                Balance = reader.GetDouble(reader.GetOrdinal("Balance")),
+                                Currency = reader.GetString(reader.GetOrdinal("Currency")),
+                                OpenDate = reader.GetString(reader.GetOrdinal("OpenDate")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                Iban = reader.GetString(reader.GetOrdinal("Iban"))
+                            };
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }                   
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return null;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+
+        }
+
+        public async Task<Account> GetAccountWithAccountId(decimal AccountId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();                    
+                    Account account;
+                    string selectAccountQuery = "SELECT * FROM [dbo].[Accounts] WHERE AccountID = @AccountID";
+
+                    SqlCommand selectAccountCommand = new SqlCommand(selectAccountQuery, connection);
+
+                    selectAccountCommand.Parameters.AddWithValue("@AccountID", AccountId);
+
+                    using (SqlDataReader reader = await selectAccountCommand.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            return account = new Account
+                            {
+                                AccountId = reader.GetDecimal(reader.GetOrdinal("AccountID")),
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerID")),
+                                AccountType = reader.GetString(reader.GetOrdinal("AccountType")),
+                                Balance = reader.GetDouble(reader.GetOrdinal("Balance")),
+                                Currency = reader.GetString(reader.GetOrdinal("Currency")),
+                                OpenDate = reader.GetString(reader.GetOrdinal("OpenDate")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                Iban = reader.GetString(reader.GetOrdinal("Iban"))
+                            };
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return null;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+
+        }
     }
 }

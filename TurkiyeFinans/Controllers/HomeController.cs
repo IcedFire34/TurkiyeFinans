@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using System;
 using System.Diagnostics;
 using TurkiyeFinans.Models;
 
@@ -14,14 +15,16 @@ namespace TurkiyeFinans.Controllers
         private readonly AccountOperations _accountOperations;
         private readonly TurkiyeFinansDbContext _context;
         private readonly CurrencyOperations _currencyOperations;
-
-        public HomeController(ILogger<HomeController> logger, CustomerOperations customerOperations, TurkiyeFinansDbContext context, AccountOperations accountOperations, CurrencyOperations currencyOperations)
+        private readonly TransferOperations _transferOperations;
+        
+        public HomeController(ILogger<HomeController> logger, CustomerOperations customerOperations, TurkiyeFinansDbContext context, AccountOperations accountOperations, CurrencyOperations currencyOperations, TransferOperations transferOperations)
         {
             _logger = logger;
             _customerOperations = customerOperations;
             _context = context;
             _accountOperations = accountOperations;
-            _currencyOperations = currencyOperations;
+            _currencyOperations = currencyOperations;     
+            _transferOperations = transferOperations;
         }
         public IActionResult Login()
         {
@@ -220,10 +223,16 @@ namespace TurkiyeFinans.Controllers
         public async Task<IActionResult> Test()
         {
             _logger.LogInformation("<<<<< Bu bir testtir >>>>>");
-            Console.WriteLine(_accountOperations.Withdraw(4050,1000).Result);
+            Console.WriteLine(_accountOperations.GetAccountWithAccountId(4051).Result.Iban);
             return RedirectToAction("AnaEkran");
         }
-       public IActionResult MevduatHesapla(float tutar,float vade,float faizOrani=40f,float stopajOrani=7.5f)
+        public async Task<IActionResult> HavaleYap(decimal senderAccount, string recipientIBAN, string recipientName, double recipientAmount)
+        {           
+            bool result = await _transferOperations.Havale(senderAccount,recipientIBAN,recipientName,recipientAmount);
+            Console.WriteLine(result);
+            return RedirectToAction("AnaEkran");
+        }
+        public IActionResult MevduatHesapla(float tutar,float vade,float faizOrani=40f,float stopajOrani=7.5f)
         {
             ViewBag.Vade = vade;
             ViewBag.FaizOrani = faizOrani;            

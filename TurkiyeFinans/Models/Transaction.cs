@@ -7,7 +7,7 @@ public partial class Transaction
 {
     public int TransactionId { get; set; }
 
-    public int AccountId { get; set; }
+    public decimal AccountId { get; set; }
 
     public string TransactionType { get; set; } = null!;
 

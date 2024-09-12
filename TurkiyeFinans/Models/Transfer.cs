@@ -17,7 +17,7 @@ public partial class Transfer
 
     public string TransferDate { get; set; } = null!;
 
-    public string Status { get; set; } = null!;
+    public double FromBalance { get; set; }
 
     public virtual Currency CurrencyNavigation { get; set; } = null!;
 
