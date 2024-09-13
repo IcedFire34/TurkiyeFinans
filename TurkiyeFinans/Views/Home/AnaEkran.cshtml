@@ -3,37 +3,40 @@
     Layout = "_TestLayout";
 }
 
+<!-- Butonlar Yan Yana -->
 <div class="form-container">
-    <!-- Hesap Aç Butonu -->
-    <form method="post" asp-action="HesapOlustur">
-        <input type="hidden" name="identificationNumber" value="@Model._Customer.IdentificationNumber" />
-        <button type="submit" class="btn btn-primary full-width">Hesap Aç</button>
-    </form>
+    <div class="btn-group">
+        <!-- Hesap Aç Butonu -->
+        <form method="post" asp-action="HesapOlustur">
+            <input type="hidden" name="identificationNumber" value="@Model._Customer.IdentificationNumber" />
+            <button type="submit" class="btn btn-primary">Hesap Aç</button>
+        </form>
 
-    <!-- Havale Yap Butonu -->
-    <form method="post" asp-action="Transfer">
-        <button type="submit" class="btn btn-primary">Havale</button>
-    </form>
+        <!-- Havale Yap Butonu -->
+        <form method="post" asp-action="Transfer">
+            <button type="submit" class="btn btn-primary">Havale</button>
+        </form>
 
-    <!-- Hesap Listele Butonu -->
-    <form method="post" asp-action="HesapListele">
-        <button type="submit" class="btn btn-primary">Listele</button>
-    </form>
+        <!-- Hesap Listele Butonu -->
+        <form method="post" asp-action="HesapListele">
+            <button type="submit" class="btn btn-primary">Listele</button>
+        </form>
 
-    <!-- Para Yatır Butonu -->
-    <form method="post" asp-action="ParaYatir">
-        <button type="submit" class="btn btn-primary">Para Yatır</button>
-    </form>
+        <!-- Para Yatır Butonu -->
+        <form method="post" asp-action="ParaYatir">
+            <button type="submit" class="btn btn-primary">Para Yatır</button>
+        </form>
 
-    <!-- Para Çek Butonu -->
-    <form method="post" asp-action="ParaCek">
-        <button type="submit" class="btn btn-primary">Para Çek</button>
-    </form>
+        <!-- Para Çek Butonu -->
+        <form method="post" asp-action="ParaCek">
+            <button type="submit" class="btn btn-primary">Para Çek</button>
+        </form>
+    </div>
 </div>
 
 <!-- İşlemleri Listele Formu -->
 <form method="post" asp-action="IslemleriListele">
-    <div class="form-group">
+    <div class="dropdown-and-button mt-3">
         <select class="form-control" id="TranactionListAccountID" name="TranactionListAccountID" required>
             <option value="" disabled selected hidden>Seçiniz ...</option>
             @if (Model._Accounts != null && Model._Accounts.Any())
@@ -50,7 +53,7 @@
 
 <!-- Hesap Kapat Formu -->
 <form method="post" asp-action="HesapKapat">
-    <div class="dropdown-and-button">
+    <div class="dropdown-and-button mt-3">
         <select class="form-control" id="CloseAccountID" name="CloseAccountID" required>
             <option value="" disabled selected hidden>Seçiniz ...</option>
             @if (Model._Accounts != null && Model._Accounts.Any())
@@ -66,7 +69,7 @@
 </form>
 
 <!-- Account Listele -->
-<div class="header-container">
+<div class="header-container mt-3">
     @if (Model._Accounts != null && Model._Accounts.Any())
     {
         <table class="table">
@@ -102,7 +105,7 @@
 </div>
 
 <!-- Transactions Listele -->
-<div class="header-container">
+<div class="header-container mt-3">
     @if (Model._Transactions != null && Model._Transactions.Any())
     {
         <table class="table">
