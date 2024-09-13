@@ -1,47 +1,72 @@
 ﻿@model TurkiyeFinans.Models.ViewModel
 @{
-    Layout = "_TestLayout";    
+    Layout = "_TestLayout";
 }
-<div class="form-container">    
-    <form method="post" >
-        <input type="hidden" name="identificationNumber" value="@Model._Customer.IdentificationNumber" />
-        <!-- Hesap Aç Butonu -->
-        <button type="submit" class="btn btn-primary full-width" asp-action="HesapOlustur" >Hesap Aç</button>
-        <!-- Havale Yap Butonu -->
-        <button type="submit" class="btn btn-primary" asp-action="Transfer">Havale</button>
-        <!-- Hesap Listele Butonu -->
-        <button type="submit" class="btn btn-primary" asp-action="HesapListele">Listele</button>
-        <!-- Para Yatır Butonu -->
-        <button type="submit" class="btn btn-primary" asp-action="ParaYatir">Para Yatır</button>     
-        <!-- PAra çek Butonu -->
-        <button type="submit" class="btn btn-primary" asp-action="ParaCek">Para Çek</button>
-        <!-- Islemler Butonu -->
-        <button type="submit" class="btn btn-primary" asp-action="">İslemler</button>
-    </form>  
-</div>
-<!-- Dropdownlist ve Kapat Butonu -->
-<div class="dropdown-and-button">
-    <select class="form-control" id="CloseAccountID" name="CloseAccountID" required onchange="showDynamicFields()">
-        <option value="" disabled selected hidden>Seçiniz ...</option>
-        @if (Model._Accounts != null && Model._Accounts.Any())
-        {
-            @foreach (var account in Model._Accounts)
-            {
-                <option value="@account.AccountId">[@account.AccountId] Hesap Türü :@account.AccountType  Bakiye:@account.Balance</option>
-            }
-        }
-    </select>
-    <button type="submit" class="btn btn-danger" asp-action="HesapKapat">Hesap Kapat</button>
-</div>
-<!-- Test Amacli buton. gerektiginde kullanilir. -->
-@* <div class="header-container">
-    <form method="post" asp-action="Test">
-        <button type="submit" class="btn btn-primary">TEST</button>
-    </form>
-</div> *@
 
-<!-- /Account Listele -->
-<div class="header-container">    
+<div class="form-container">
+    <!-- Hesap Aç Butonu -->
+    <form method="post" asp-action="HesapOlustur">
+        <input type="hidden" name="identificationNumber" value="@Model._Customer.IdentificationNumber" />
+        <button type="submit" class="btn btn-primary full-width">Hesap Aç</button>
+    </form>
+
+    <!-- Havale Yap Butonu -->
+    <form method="post" asp-action="Transfer">
+        <button type="submit" class="btn btn-primary">Havale</button>
+    </form>
+
+    <!-- Hesap Listele Butonu -->
+    <form method="post" asp-action="HesapListele">
+        <button type="submit" class="btn btn-primary">Listele</button>
+    </form>
+
+    <!-- Para Yatır Butonu -->
+    <form method="post" asp-action="ParaYatir">
+        <button type="submit" class="btn btn-primary">Para Yatır</button>
+    </form>
+
+    <!-- Para Çek Butonu -->
+    <form method="post" asp-action="ParaCek">
+        <button type="submit" class="btn btn-primary">Para Çek</button>
+    </form>
+</div>
+
+<!-- İşlemleri Listele Formu -->
+<form method="post" asp-action="IslemleriListele">
+    <div class="form-group">
+        <select class="form-control" id="TranactionListAccountID" name="TranactionListAccountID" required>
+            <option value="" disabled selected hidden>Seçiniz ...</option>
+            @if (Model._Accounts != null && Model._Accounts.Any())
+            {
+                @foreach (var account in Model._Accounts)
+                {
+                    <option value="@account.AccountId">[@account.AccountId] Hesap Türü :@account.AccountType  Bakiye:@account.Balance</option>
+                }
+            }
+        </select>
+        <button type="submit" class="btn btn-primary mt-2">İşlemleri Listele</button>
+    </div>
+</form>
+
+<!-- Hesap Kapat Formu -->
+<form method="post" asp-action="HesapKapat">
+    <div class="dropdown-and-button">
+        <select class="form-control" id="CloseAccountID" name="CloseAccountID" required>
+            <option value="" disabled selected hidden>Seçiniz ...</option>
+            @if (Model._Accounts != null && Model._Accounts.Any())
+            {
+                @foreach (var account in Model._Accounts)
+                {
+                    <option value="@account.AccountId">[@account.AccountId] Hesap Türü :@account.AccountType  Bakiye:@account.Balance</option>
+                }
+            }
+        </select>
+        <button type="submit" class="btn btn-danger mt-2">Hesap Kapat</button>
+    </div>
+</form>
+
+<!-- Account Listele -->
+<div class="header-container">
     @if (Model._Accounts != null && Model._Accounts.Any())
     {
         <table class="table">
@@ -73,5 +98,39 @@
                 }
             </tbody>
         </table>
-    }   
+    }
+</div>
+
+<!-- Transactions Listele -->
+<div class="header-container">
+    @if (Model._Transactions != null && Model._Transactions.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>TransactionID</th>
+                    <th>AccountID</th>
+                    <th>TransactionType</th>
+                    <th>Amount</th>
+                    <th>Currency</th>
+                    <th>TransactionDate</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var transaction in Model._Transactions)
+                {
+                    <tr>
+                        <td>@transaction.TransactionId</td>
+                        <td>@transaction.AccountId</td>
+                        <td>@transaction.TransactionType</td>
+                        <td>@transaction.Amount</td>
+                        <td>@transaction.Currency</td>
+                        <td>@transaction.TransactionDate</td>
+                        <td>@transaction.Description</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 </div>

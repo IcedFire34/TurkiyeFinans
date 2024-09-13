@@ -5,41 +5,41 @@
     ViewData["Title"] = "Kayit Ol";
 }
 <!-- Kayıt Formu -->
-<form method="post" asp-controller="Home" asp-action="KayitOlGonder">
+<form class="custom-form" method="post" asp-controller="Home" asp-action="KayitOlGonder">
     <div class="form-group">
         <label><strong>Kayıt Ol</strong></label>
     </div>
     <div class="form-group">
-        <label for="TCKimlikNo">TC no</label>
-        <input type="number" class="form-control" id="TCKimlikNo" name="TCKimlikNo" required />
+        @* <label for="TCKimlikNo">TC no</label> *@
+        <input type="number" class="form-control" id="TCKimlikNo" name="TCKimlikNo" required placeholder="Tc no giriniz ..." />
     </div>
     <div class="form-group">
-        <label for="Ad">Adı</label>
-        <input type="text" class="form-control" id="Ad" name="Ad" required />
+        @* <label for="Ad">Adı</label> *@
+        <input type="text" class="form-control" id="Ad" name="Ad" required placeholder="Adınızı giriniz ..." />
     </div>
     <div class="form-group">
-        <label for="Soyad">Soyadı</label>
-        <input type="text" class="form-control" id="Soyad" name="Soyad" required />
+        @* <label for="Soyad">Soyadı</label> *@
+        <input type="text" class="form-control" id="Soyad" name="Soyad" required placeholder="Soyadınızı giriniz ..." />
     </div>
     <div class="form-group">
-        <label for="DogumTarihi">Doğum Tarihi</label>
-        <input type="date" class="form-control" id="DogumTarihi" name="DogumTarihi" required />
+        @* <label for="DogumTarihi">Doğum Tarihi</label> *@
+        <input type="date" class="form-control" id="DogumTarihi" name="DogumTarihi" required placeholder="Doğum tarihinizi giriniz ..." />
     </div>
     <div class="form-group">
-        <label for="Adres">Adres</label>
-        <input type="text" class="form-control" id="Adres" name="Adres" required />
+        @* <label for="Adres">Adres</label> *@
+        <input type="text" class="form-control" id="Adres" name="Adres" required placeholder="Adresinizi giriniz ..." />
     </div>
     <div class="form-group">
-        <label for="Telefon">Telefon</label>
-        <input type="tel" class="form-control" id="Telefon" name="Telefon" required />
+        @* <label for="Telefon">Telefon</label> *@
+        <input type="tel" class="form-control" id="Telefon" name="Telefon" required placeholder="Telefon numaranızı giriniz ..." />
     </div>
     <div class="form-group">
-        <label for="Email">Email</label>
-        <input type="email" class="form-control" id="Email" name="Email" required />
+        @* <label for="Email">Email</label> *@
+        <input type="email" class="form-control" id="Email" name="Email" required placeholder="Email adresinizi giriniz ..." />
     </div>
     <div class="form-group">
-        <label for="Pass">Parola</label>
-        <input type="password" class="form-control" id="Pass" name="Pass" required />
+        @* <label for="Pass">Parola</label> *@
+        <input type="password" class="form-control" id="Pass" name="Pass" required placeholder="Parolanızı giriniz ..." />
     </div>
     <button type="submit" class="btn btn-primary">Kayit ol</button>
 </form>

@@ -50,7 +50,7 @@ namespace TurkiyeFinans.Models
                 {
                     await connection.OpenAsync();
 
-                    string checkQuery = "SELECT * FROM [dbo].[Transaction] WHERE AccountID = @AccountID";
+                    string checkQuery = "SELECT * FROM [dbo].[Transactions] WHERE AccountID = @AccountID";
                     SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
 
                     checkCommand.Parameters.AddWithValue("@AccountID", accountID);

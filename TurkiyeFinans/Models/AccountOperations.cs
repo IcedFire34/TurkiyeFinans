@@ -230,7 +230,7 @@ namespace TurkiyeFinans.Models
 
         // Hesabi kapatir
         // Parametre olarak aldigi accountID'yi kapatir.
-        public async Task<bool> CloseAccountAsync(int accountID)
+        public async Task<bool> CloseAccountAsync(decimal accountID)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -420,7 +420,7 @@ namespace TurkiyeFinans.Models
 
                         // Transactiona kaydet
                         TransactionOperations transactionOperations = new TransactionOperations(_connectionString);
-                        int transactionID = await transactionOperations.AddTransaction(accountID, "Deposit", amount, "TL", description);
+                        int transactionID = await transactionOperations.AddTransaction(accountID, "Withdraw", amount, "TL", description);
 
                         return resultBalance > 0;
                     }

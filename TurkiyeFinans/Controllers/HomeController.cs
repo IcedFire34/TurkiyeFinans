@@ -131,6 +131,7 @@ namespace TurkiyeFinans.Controllers
                 TempData["UserTC"]=GirTCKimlikNo.ToString();
 
                 viewData._Accounts = await _accountOperations.ListAccountAsync(viewData._Customer.CustomerId);
+                
                 if (viewData._Customer.IdentificationNumber == "11111111111")
                 {
                     return View("Admin",viewData);
@@ -195,7 +196,7 @@ namespace TurkiyeFinans.Controllers
         }        
 
         [HttpPost]
-        public async Task<IActionResult> HesapKapat(int CloseAccountID)
+        public async Task<IActionResult> HesapKapat(decimal CloseAccountID)
         {
             string userTC = TempData["UserTC"].ToString();
             TempData["UserTC"] = userTC;
@@ -241,6 +242,21 @@ namespace TurkiyeFinans.Controllers
             _logger.LogInformation("<<<<< Bu bir testtir >>>>>");
             Console.WriteLine(_accountOperations.Withdraw(4050, 70, "Para Cek test"));
             return RedirectToAction("AnaEkran");
+        }
+        public async Task<IActionResult> IslemleriListele(decimal TranactionListAccountID)
+        {
+            _logger.LogInformation("<<<<< Bu bir testtir >>>>>");
+            string userTC = TempData["UserTC"].ToString();
+            Customer user = await _customerOperations.GetCustomerAsync(userTC);
+            List<Account> accounts = await _accountOperations.ListAccountAsync(user.CustomerId);
+            TempData["UserTC"] = userTC;
+            ViewModel viewModel = new ViewModel
+            {
+                _Accounts = accounts,
+                _Customer=user,
+                _Transactions = await _transactionOperations.ListTransactionAsync(TranactionListAccountID),
+            };
+            return View("AnaEkran",viewModel);
         }
         public async Task<IActionResult> HavaleYap(decimal senderAccount, string recipientIBAN, string recipientName, double recipientAmount)
         {           
