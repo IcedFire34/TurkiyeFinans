@@ -5,5 +5,19 @@
 }
 <div style="text-align: center;">
     <h1 style="font-size: 60px;">Merhaba</h1>  
-    <h3 style="font-size: 36px;">Hoşgeldiniz</h3> 
+    <h3 style="font-size: 36px;">Hoşgeldiniz</h3>
+
+    <form class="custom-form" asp-action="MevduatHesapla">
+        <h5>Mevduat Getirisi Hesapla</h5>
+        
+        <input type="text" id="tutar" name="tutar" placeholder="TL Tutarı Giriniz">        
+        <input type="text" id="vade" name="vade" placeholder="Gün Sayısını Giriniz">
+        
+        <label>Faiz Oranı : %@ViewBag.FaizOrani</label>        
+        <label>Stopaj Oranı : %@ViewBag.StopajOrani</label>
+        <label>Stopaj Tutarı : @ViewBag.StopajTutari TL</label>        
+        <label>Vade sonu tutarı : @ViewBag.VadeSonuTutari TL</label>
+        
+        <button type="submit" class="btn">Hesapla</button>
+    </form>
 </div>

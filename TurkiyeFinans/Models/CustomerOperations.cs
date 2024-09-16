@@ -209,5 +209,56 @@ namespace TurkiyeFinans.Models
                 }
             }
         }
+
+        public async Task<Customer?> GetCustomerWithCustomerIDAsync(int customerID)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    // 1. Müşteriyi IdentificationNumber ile kontrol et
+                    string checkQuery = "SELECT * FROM [dbo].[Customer] WHERE CustomerID = @CustomerID";
+                    SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
+
+                    checkCommand.Parameters.AddWithValue("@CustomerID", customerID);
+
+                    using (SqlDataReader reader = await checkCommand.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            // Müşteri bilgilerini al
+                            Customer customer = new Customer
+                            {
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerID")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                                DateOfBirth = reader.GetString(reader.GetOrdinal("DateOfBirth")),
+                                Address = reader.GetString(reader.GetOrdinal("Address")),
+                                PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                IdentificationNumber = reader.GetString(reader.GetOrdinal("IdentificationNumber")),
+                                Pass = reader.GetString(reader.GetOrdinal("Pass"))
+                            };
+
+                            // Listeye ekle
+                            return customer;
+                        }
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    return null;
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+
+
     }
 }

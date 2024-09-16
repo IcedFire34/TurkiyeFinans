@@ -54,10 +54,14 @@ public partial class TurkiyeFinansDbContext : DbContext
 
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.AccountId)
+                .ValueGeneratedOnAdd()
+                .HasColumnType("decimal(26, 0)")
+                .HasColumnName("AccountID");
             entity.Property(e => e.AccountType).HasMaxLength(20);
             entity.Property(e => e.Currency).HasMaxLength(25);
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.Iban).HasMaxLength(34);
             entity.Property(e => e.OpenDate).HasMaxLength(50);
             entity.Property(e => e.Status).HasMaxLength(6);
 
@@ -74,12 +78,12 @@ public partial class TurkiyeFinansDbContext : DbContext
 
         modelBuilder.Entity<AccountVadeli>(entity =>
         {
-            entity.HasKey(e => e.AccountId).HasName("PK_Account_Vadeli");
+            entity.HasKey(e => e.AccountId);
 
-            entity.ToTable("AccountVadeli");
+            entity.ToTable("Account_Vadeli");
 
             entity.Property(e => e.AccountId)
-                .ValueGeneratedNever()
+                .HasColumnType("decimal(26, 0)")
                 .HasColumnName("AccountID");
 
             entity.HasOne(d => d.Account).WithOne(p => p.AccountVadeli)
@@ -90,17 +94,16 @@ public partial class TurkiyeFinansDbContext : DbContext
 
         modelBuilder.Entity<AccountYatirim>(entity =>
         {
-            entity.HasKey(e => e.AccountId).HasName("PK_Account_Yatirim");
-
-            entity.ToTable("AccountYatirim");
+            entity
+                .HasNoKey()
+                .ToTable("Account_Yatirim");
 
             entity.Property(e => e.AccountId)
-                .ValueGeneratedNever()
+                .HasColumnType("decimal(26, 0)")
                 .HasColumnName("AccountID");
-            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
 
-            entity.HasOne(d => d.Account).WithOne(p => p.AccountYatirim)
-                .HasForeignKey<AccountYatirim>(d => d.AccountId)
+            entity.HasOne(d => d.Account).WithMany()
+                .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Account_Yatirim_Accounts");
         });
@@ -110,7 +113,9 @@ public partial class TurkiyeFinansDbContext : DbContext
             entity.Property(e => e.CardId)
                 .ValueGeneratedNever()
                 .HasColumnName("CardID");
-            entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.AccountId)
+                .HasColumnType("decimal(26, 0)")
+                .HasColumnName("AccountID");
             entity.Property(e => e.CardNumber)
                 .HasMaxLength(16)
                 .IsFixedLength();
@@ -148,7 +153,9 @@ public partial class TurkiyeFinansDbContext : DbContext
             entity.Property(e => e.ExchangeId)
                 .ValueGeneratedNever()
                 .HasColumnName("ExchangeID");
-            entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.AccountId)
+                .HasColumnType("decimal(26, 0)")
+                .HasColumnName("AccountID");
             entity.Property(e => e.ExchangeDate).HasMaxLength(50);
             entity.Property(e => e.FromCurrency).HasMaxLength(25);
             entity.Property(e => e.ToCurrency).HasMaxLength(25);
@@ -209,7 +216,9 @@ public partial class TurkiyeFinansDbContext : DbContext
             entity.Property(e => e.InvestmentId)
                 .ValueGeneratedNever()
                 .HasColumnName("InvestmentID");
-            entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.AccountId)
+                .HasColumnType("decimal(26, 0)")
+                .HasColumnName("AccountID");
             entity.Property(e => e.InvestmentType).HasMaxLength(50);
             entity.Property(e => e.LastValueUpdate).HasMaxLength(50);
             entity.Property(e => e.PurchaseDate).HasMaxLength(50);
@@ -291,7 +300,9 @@ public partial class TurkiyeFinansDbContext : DbContext
             entity.Property(e => e.TransactionId)
                 .ValueGeneratedNever()
                 .HasColumnName("TransactionID");
-            entity.Property(e => e.AccountId).HasColumnName("AccountID");
+            entity.Property(e => e.AccountId)
+                .HasColumnType("decimal(26, 0)")
+                .HasColumnName("AccountID");
             entity.Property(e => e.Currency).HasMaxLength(25);
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.TransactionDate).HasMaxLength(50);
@@ -305,13 +316,14 @@ public partial class TurkiyeFinansDbContext : DbContext
 
         modelBuilder.Entity<Transfer>(entity =>
         {
-            entity.Property(e => e.TransferId)
-                .ValueGeneratedNever()
-                .HasColumnName("TransferID");
+            entity.Property(e => e.TransferId).HasColumnName("TransferID");
             entity.Property(e => e.Currency).HasMaxLength(25);
-            entity.Property(e => e.FromAccountId).HasColumnName("FromAccountID");
-            entity.Property(e => e.Status).HasMaxLength(9);
-            entity.Property(e => e.ToAccountId).HasColumnName("ToAccountID");
+            entity.Property(e => e.FromAccountId)
+                .HasColumnType("decimal(26, 0)")
+                .HasColumnName("FromAccountID");
+            entity.Property(e => e.ToAccountId)
+                .HasColumnType("decimal(26, 0)")
+                .HasColumnName("ToAccountID");
             entity.Property(e => e.TransferDate).HasMaxLength(50);
 
             entity.HasOne(d => d.CurrencyNavigation).WithMany(p => p.Transfers)

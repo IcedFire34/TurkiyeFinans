@@ -5,7 +5,7 @@ namespace TurkiyeFinans.Models;
 
 public partial class Account
 {
-    public int AccountId { get; set; }
+    public decimal AccountId { get; set; }
 
     public int CustomerId { get; set; }
 
@@ -19,9 +19,9 @@ public partial class Account
 
     public string Status { get; set; } = null!;
 
-    public virtual AccountVadeli? AccountVadeli { get; set; }
+    public string? Iban { get; set; }
 
-    public virtual AccountYatirim? AccountYatirim { get; set; }
+    public virtual AccountVadeli? AccountVadeli { get; set; }
 
     public virtual ICollection<Card> Cards { get; set; } = new List<Card>();
 
